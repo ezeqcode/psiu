@@ -416,6 +416,8 @@ li.item.is-fresh { animation: fresh 1.2s var(--ease-out); }
 
 .foot-meta { display: flex; flex-direction: column; align-items: end; text-align: right; }
 .foot-meta .link { min-height: 32px; }
+.foot-links { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--space-md); justify-content: flex-end; margin: 0; }
+.foot-links .link { display: inline-flex; align-items: center; min-height: 36px; color: var(--color-muted); }
 .social { display: flex; gap: var(--space-md); margin-top: var(--space-2xs) !important; }
 .social a {
   display: inline-flex; align-items: center; gap: var(--space-3xs);
@@ -535,6 +537,7 @@ ol.how li strong { font-weight: 600; }
   .foot { flex-direction: column; align-items: start; gap: var(--space-xs); margin-top: var(--space-xl); }
   .foot-main { flex: none; }
   .foot-meta { align-items: start; text-align: left; }
+  .foot-links { justify-content: flex-start; }
   .sheet {
     width: 100%; max-width: none; max-height: 88dvh;
     margin: auto 0 0; border-radius: 18px 18px 0 0; border-bottom: 0;
@@ -794,8 +797,11 @@ ol.how li strong { font-weight: 600; }
       <p class="muted">Troca de senhas, tokens e chaves de API com criptografia no seu navegador. Nada é enviado a servidor.</p>
     </div>
     <div class="foot-meta">
-      <button class="link" type="button" id="howOpen" aria-haspopup="dialog" aria-controls="howDialog">Como funciona</button>
-      <p class="muted">© <span id="year">2026</span> · Feito por Ezequiel Magalhães</p>
+      <p class="foot-links">
+        <button class="link" type="button" id="howOpen" aria-haspopup="dialog" aria-controls="howDialog">Como funciona</button>
+        <a class="link" href="https://github.com/ezeqcode/psiu" target="_blank" rel="noopener noreferrer" aria-label="Código aberto no GitHub (abre em nova aba)">Código aberto no GitHub</a>
+      </p>
+      <p class="muted">©<span id="year">2026</span> · Feito por Ezequiel Magalhães</p>
       <p class="social">
         <a href="https://www.linkedin.com/in/ezequiel-magalhaes/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn de Ezequiel Magalhães (abre em nova aba)">
           <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 10.5V17M8 7.5v.01M12 17v-6.5M12 13.5a2.5 2.5 0 0 1 5 0V17"/></svg>LinkedIn</a>
@@ -815,10 +821,10 @@ ol.how li strong { font-weight: 600; }
   </div>
   <ol class="how">
     <li><strong>Pedir.</strong> Você cria um link e manda para quem tem a senha.</li>
-    <li><strong>Enviar.</strong> A pessoa abre o link, escreve a senha e te devolve um texto trancado.</li>
-    <li><strong>Abrir.</strong> Você cola o texto aqui, no mesmo navegador, e lê a senha.</li>
+    <li><strong>Enviar.</strong> A pessoa abre o link, escreve a senha e te devolve um link de resposta.</li>
+    <li><strong>Abrir.</strong> Você abre esse link no mesmo navegador e lê a senha.</li>
   </ol>
-  <p class="muted">O texto trancado pode passar por WhatsApp ou e-mail: sem este navegador, ninguém abre.</p>
+  <p class="muted">O link de resposta pode passar por WhatsApp ou e-mail: sem este navegador, ninguém abre.</p>
   <p class="muted" style="margin-top:var(--space-sm)">Os dois veem um código de conferência. Confirmem por ligação: se for igual, ninguém trocou o link no caminho.</p>
   <details>
     <summary>Detalhes técnicos</summary>
