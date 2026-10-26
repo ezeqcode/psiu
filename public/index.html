@@ -1,0 +1,1749 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<title>PSIU · Privado, Seguro, Inviolável, Único</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sedgwick+Ave+Display&text=PSIU&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* Hallmark · macrostructure: Tabbed tool (bespoke app screen) · tone: quiet utilitarian · anchor hue: steel 250°
+ * theme: custom · vibe: "cool steel paper, one brass detail, nothing extra"
+ * paper oklch(98.5% 0.003 250) · accent oklch(42% 0.06 250) · brass oklch(55% 0.11 70) — complementary pair, 180° apart
+ * display + body: Archivo · mono: JetBrains Mono · axes: light / grotesk-sans / cool
+ * enrichment: none · motion: button press · row open
+ * pre-emit critique: P4 H5 E5 S4 R5 V4
+ */
+:root {
+  /* Two hues only, opposite on the wheel: steel 250° (every neutral + action) and brass 70° (codes,
+     lock bodies). Danger sits at 30°, the warm neighbour of brass. Chroma steps: neutral ≤ .012,
+     steel accent .06, brass .11, danger .15. */
+  --color-paper:      oklch(98.5% 0.003 250);
+  --color-field:      oklch(96% 0.006 250);
+  --color-ink:        oklch(22% 0.012 250);
+  --color-muted:      oklch(52% 0.012 250);
+  --color-rule:       oklch(91% 0.006 250);
+  --color-rule-strong:oklch(80% 0.008 250);
+  --color-accent:     oklch(42% 0.06 250);
+  --color-accent-hover: oklch(36% 0.06 250);
+  --color-on-accent:  oklch(98.5% 0.003 250);
+  --color-brass:      oklch(55% 0.11 70);
+  --color-ok:         oklch(42% 0.06 250);
+  --color-danger:     oklch(52% 0.15 30);
+  --color-focus:      oklch(60% 0.1 250);
+  --color-toast:      oklch(22% 0.012 250);
+  --color-on-toast:   oklch(98.5% 0.003 250);
+  --color-toast-action: oklch(80% 0.11 70);
+  --color-illo-line:  oklch(22% 0.012 250);
+  --color-illo-fill:  oklch(91% 0.012 250);
+  --color-illo-brass: oklch(80% 0.11 70);
+  --color-illo-paper: oklch(99.5% 0.002 250);
+  /* illustrations and icons are printed stickers: they keep these colours in both themes */
+  --color-icon:        oklch(52% 0.012 250);
+  --color-icon-active: oklch(42% 0.06 250);
+  --color-dot:        oklch(80% 0.01 250);
+  --color-tag-fill:   oklch(80% 0.11 70);
+  --color-tag-line:   oklch(20% 0.012 250);
+  --color-tag-depth:  oklch(42% 0.06 250);
+  --color-tag-halo:   oklch(99.8% 0.002 250);
+  --color-cut-shadow: oklch(22% 0.012 250 / 0.26);
+  --color-scrim:      oklch(22% 0.012 250 / 0.35);
+  --color-shadow:     oklch(22% 0.012 250 / 0.35);
+  --color-lift:       oklch(22% 0.012 250 / 0.22);
+  --color-lift-accent: oklch(42% 0.06 250 / 0.45);
+
+  --font-body: "Archivo", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --font-tag: "Sedgwick Ave Display", "Archivo", cursive;
+  --stretch-display: 108%;
+
+  --space-3xs: 0.25rem; --space-2xs: 0.5rem; --space-xs: 0.75rem; --space-sm: 1rem;
+  --space-md: 1.5rem; --space-lg: 2rem; --space-xl: 3rem; --space-2xl: 4.5rem;
+
+  --text-xs: 0.8rem; --text-sm: 0.9rem; --text-base: 1rem; --text-lg: 1.25rem;
+  --text-title: clamp(1.75rem, 4vw, 2.25rem);
+  --text-code: clamp(1.5rem, 5vw, 2rem);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-snap: cubic-bezier(0.3, 1.5, 0.5, 1); /* illustrations only: a shackle seating */
+  --dur-short: 150ms;
+  --dur-hover: 200ms;
+  --art-w: 9rem;
+  --dot-gap: 22px;
+  --radius: 8px;
+  --z-nav: 40;
+  --z-toast: 50;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-paper:      oklch(17% 0.008 250);
+    --color-field:      oklch(21% 0.01 250);
+    --color-ink:        oklch(94% 0.004 250);
+    --color-muted:      oklch(68% 0.01 250);
+    --color-rule:       oklch(27% 0.01 250);
+    --color-rule-strong:oklch(38% 0.012 250);
+    --color-accent:     oklch(82% 0.06 250);
+    --color-accent-hover: oklch(88% 0.05 250);
+    --color-on-accent:  oklch(17% 0.008 250);
+    --color-brass:      oklch(80% 0.11 70);
+    --color-ok:         oklch(82% 0.06 250);
+    --color-danger:     oklch(74% 0.15 30);
+    --color-focus:      oklch(75% 0.1 250);
+    --color-toast:      oklch(94% 0.004 250);
+    --color-on-toast:   oklch(17% 0.008 250);
+    --color-toast-action: oklch(55% 0.11 70);
+    --color-dot:        oklch(31% 0.012 250);
+    --color-icon:        oklch(30% 0.012 250);
+    --color-icon-active: oklch(42% 0.06 250);
+    --color-tag-fill:   oklch(80% 0.11 70);
+    --color-tag-line:   oklch(14% 0.01 250);
+    --color-tag-depth:  oklch(42% 0.06 250);
+    --color-tag-halo:   oklch(94% 0.004 250);
+    --color-cut-shadow: oklch(3% 0.01 250 / 0.75);
+    --color-scrim:      oklch(8% 0.01 250 / 0.6);
+    --color-shadow:     oklch(5% 0.01 250 / 0.7);
+    --color-lift:       oklch(5% 0.01 250 / 0.6);
+    --color-lift-accent: oklch(5% 0.01 250 / 0.6);
+    color-scheme: dark;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { overflow-x: clip; }
+html {
+  -webkit-text-size-adjust: 100%;
+  /* reserve the scrollbar lane so tabs of different heights don't shift the layout */
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-rule-strong) transparent;
+}
+body {
+  margin: 0;
+  /* fine dot grid, fixed to the screen like graph paper under the work */
+  background-color: var(--color-paper);
+  background-image: radial-gradient(circle, var(--color-dot) 1px, transparent 1.4px);
+  background-size: var(--dot-gap) var(--dot-gap);
+  background-position: calc(var(--dot-gap) / 2) calc(var(--dot-gap) / 2);
+  background-attachment: fixed;
+  color: var(--color-ink);
+  font: 400 var(--text-base)/1.6 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-rule-strong); border: 3px solid var(--color-paper); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-muted); }
+textarea::-webkit-scrollbar-thumb, .secret::-webkit-scrollbar-thumb, .sealed::-webkit-scrollbar-thumb { border-color: var(--color-field); }
+::selection { background: color-mix(in oklch, var(--color-brass) 28%, transparent); }
+/* slashed zero: 0 and O must never be confused in a fingerprint */
+.code, .code-inline, .r-code, .mono, .secret, .sealed { font-feature-settings: "zero" 1; font-variant-numeric: tabular-nums; }
+[hidden] { display: none !important; }
+:focus { outline: none; }
+:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+.cut-halo { flood-color: var(--color-tag-halo); }
+.cut-shadow { flood-color: var(--color-cut-shadow); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* footer sits on the bottom edge even when a tab is short */
+body { min-height: 100dvh; display: flex; flex-direction: column; }
+.wrap {
+  flex: 1 0 auto; display: flex; flex-direction: column;
+  width: 100%; max-width: 40rem; margin: 0 auto;
+  padding: var(--space-lg) var(--space-sm) var(--space-md);
+}
+.stage { flex: 1 0 auto; }
+
+/* ---------- header + tabs ---------- */
+.top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); flex-wrap: wrap; margin-bottom: var(--space-xl); }
+.wordmark { font-weight: 700; font-stretch: var(--stretch-display); font-size: var(--text-lg); letter-spacing: -0.02em; color: var(--color-ink); text-decoration: none; }
+[role="tablist"] { position: relative; display: flex; gap: var(--space-md); }
+[role="tab"] {
+  appearance: none; background: none; border: 0; cursor: pointer;
+  padding: var(--space-2xs) 0; min-height: 44px;
+  font: 500 var(--text-sm)/1 var(--font-body); color: var(--color-muted);
+  white-space: nowrap;
+  transition: color var(--dur-short) var(--ease-out);
+}
+[role="tab"]:hover { color: var(--color-ink); }
+/* weight stays fixed so labels never reflow when selected */
+[role="tab"][aria-selected="true"] { color: var(--color-ink); }
+/* one indicator that slides between tabs (width 1px, scaled — transform only) */
+.tab-ink {
+  position: absolute; left: 0; bottom: 0; width: 1px; height: 2px;
+  background: var(--color-ink); transform-origin: 0 0;
+  transform: translateX(var(--ink-x, 0)) scaleX(var(--ink-w, 0));
+  transition: transform 320ms var(--ease-out);
+}
+.tab-ink.no-anim { transition: none; }
+.tab-ico { display: none; overflow: visible; width: 22px; height: 22px; fill: none; stroke: var(--color-icon); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+[role="tab"][aria-selected="true"] .tab-ico { stroke: var(--color-icon-active); }
+
+/* ---------- tab change: content slides toward the chosen tab ---------- */
+.stage { view-transition-name: stage; }
+::view-transition-group(stage) { animation-duration: 300ms; }
+::view-transition-old(stage) { animation: stage-out 140ms var(--ease-in) both; }
+::view-transition-new(stage) { animation: stage-in 300ms var(--ease-out) both; }
+::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+@keyframes stage-out { to { opacity: 0; transform: translateX(calc(var(--dir, 0) * -14px)); } }
+@keyframes stage-in { from { opacity: 0; transform: translate(calc(var(--dir, 0) * 18px), calc((1 - var(--dir, 0) * var(--dir, 0)) * 6px)); } }
+
+/* ---------- spot illustrations ---------- */
+/* each tab opens on a centred axis: illustration, title, one line, then the action */
+.has-art { text-align: center; }
+.art { display: block; width: var(--art-w); height: auto; margin: 0 auto var(--space-sm); overflow: visible; }
+.has-art .sub { max-width: 34ch; margin-inline: auto; }
+/* long text and lists read better left-aligned */
+.has-art input, .has-art textarea, .has-art .mine, .has-art .field-head, .has-art .secret, .has-art .sealed { text-align: left; }
+.has-art .row { justify-content: center; }
+.has-art .error { text-align: center; }
+.art .ln { fill: none; stroke: var(--color-illo-line); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.art .thin { stroke-width: 1.5; }
+.art .dash { stroke-dasharray: 2 5; }
+.art .f-fill { fill: var(--color-illo-fill); }
+.art .f-brass { fill: var(--color-illo-brass); }
+.art .f-paper { fill: var(--color-illo-paper); }
+.art .f-ink { fill: var(--color-illo-line); }
+.art .sh-out { fill: none; stroke: var(--color-illo-line); stroke-width: 10; stroke-linecap: round; }
+.art .sh-in { fill: none; stroke: var(--color-illo-fill); stroke-width: 6; stroke-linecap: round; }
+.art .glint { fill: none; stroke: var(--color-illo-paper); stroke-width: 2; stroke-linecap: round; opacity: 0.55; }
+.art .shackle { transform-box: view-box; transition: transform 420ms var(--ease-snap); }
+.art.turned .shackle { transition-delay: 220ms; }
+.art.is-open .shackle { transform: translateY(-9px); }
+.art .plane { transform-box: view-box; }
+.art.sent .plane { animation: fly 900ms var(--ease-out); }
+@keyframes fly { 0% { transform: translate(-18px, 10px); opacity: 0; } 60% { opacity: 1; } 100% { transform: none; } }
+.art.sent .trail { animation: trail 900ms var(--ease-out); }
+@keyframes trail { from { stroke-dashoffset: 28; } to { stroke-dashoffset: 0; } }
+.art .key { transform-box: view-box; transform-origin: 30px 76px; }
+.art.turned .key { animation: turn 500ms var(--ease-out); }
+@keyframes turn { 0% { transform: none; } 40% { transform: translateX(6px) scaleY(0.55); } 100% { transform: translateX(4px); } }
+.art.turned .key { transform: translateX(4px); }
+
+/* ---------- type ---------- */
+h1 { margin: 0 0 var(--space-2xs); font-size: var(--text-title); font-weight: 650; font-stretch: var(--stretch-display); line-height: 1.08; letter-spacing: -0.03em; text-wrap: balance; }
+.sub { text-wrap: pretty; }
+.sub { margin: 0 0 var(--space-lg); color: var(--color-muted); }
+.muted { color: var(--color-muted); font-size: var(--text-sm); margin: 0; }
+.code-inline { font: 600 0.95em var(--font-mono); color: var(--color-brass); white-space: nowrap; }
+
+/* ---------- controls ---------- */
+label { display: block; font-weight: 600; font-size: var(--text-sm); margin-bottom: var(--space-2xs); }
+input[type="text"], textarea {
+  width: 100%;
+  font: 400 var(--text-base)/1.5 var(--font-body);
+  color: var(--color-ink);
+  background: var(--color-field);
+  border: 1px solid var(--color-rule-strong);
+  border-radius: var(--radius);
+  padding: var(--space-xs) var(--space-sm);
+  min-height: 46px;
+}
+input:hover, textarea:hover { border-color: var(--color-muted); }
+input:focus-visible, textarea:focus-visible { outline-offset: 0; border-color: var(--color-focus); }
+textarea { display: block; resize: vertical; min-height: 6rem; }
+.mono { font-family: var(--font-mono) !important; font-size: var(--text-sm) !important; }
+textarea.masked { -webkit-text-security: disc; }
+input::placeholder, textarea::placeholder { color: var(--color-muted); opacity: 0.8; }
+[aria-invalid="true"] { border-color: var(--color-danger) !important; }
+
+.btn {
+  appearance: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 44px; padding: 0 var(--space-md);
+  font: 600 var(--text-sm)/1 var(--font-body); white-space: nowrap;
+  color: var(--color-ink); background: var(--color-paper);
+  border: 1px solid var(--color-rule-strong); border-radius: var(--radius);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-hover) var(--ease-out),
+    border-color var(--dur-hover) var(--ease-out),
+    color var(--dur-hover) var(--ease-out),
+    box-shadow var(--dur-hover) var(--ease-out),
+    transform var(--dur-hover) var(--ease-out);
+}
+.btn.primary { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-on-accent); }
+/* hover only where a pointer can hover: touch screens keep the plain press */
+@media (hover: hover) {
+  .btn:hover { background: var(--color-field); border-color: var(--color-muted); transform: translateY(-1px); box-shadow: 0 6px 14px -8px var(--color-lift); }
+  .btn.primary:hover { background: var(--color-accent-hover); border-color: var(--color-accent-hover); box-shadow: 0 8px 18px -8px var(--color-lift-accent); }
+}
+.btn:active { transform: translateY(1px); box-shadow: none; transition-duration: 60ms; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+/* busy: label hides in place (button keeps its size), a ring spins where it was */
+.btn { position: relative; --ring: var(--color-ink); }
+.btn.primary { --ring: var(--color-on-accent); }
+/* !important: hover/primary colours must not bring the label back while busy */
+.btn[aria-busy="true"] { cursor: progress; color: transparent !important; transform: none; }
+.btn[aria-busy="true"]::after {
+  content: ""; position: absolute; inset: 0; margin: auto; width: 1rem; height: 1rem;
+  border: 2px solid var(--ring); border-right-color: transparent; border-radius: 50%;
+  animation: spin 700ms linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.btn.is-done { color: var(--color-ok); border-color: var(--color-ok); background: transparent; }
+
+.link {
+  appearance: none; background: none; border: 0; padding: 0; min-height: 44px; cursor: pointer;
+  font: 500 var(--text-sm)/1 var(--font-body); color: var(--color-muted); white-space: nowrap;
+  text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in oklch, currentColor 35%, transparent);
+  transition:
+    color var(--dur-hover) var(--ease-out),
+    text-decoration-color var(--dur-hover) var(--ease-out),
+    text-underline-offset var(--dur-hover) var(--ease-out);
+}
+.link.danger { color: var(--color-danger); }
+@media (hover: hover) {
+  .link:hover { color: var(--color-ink); text-decoration-color: currentColor; text-underline-offset: 3px; text-decoration-thickness: 2px; }
+  .link.danger:hover { color: var(--color-danger); }
+  .result a:hover, .foot a:hover { text-decoration-thickness: 2px; }
+}
+
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2xs) var(--space-sm); margin-top: var(--space-sm); }
+.error { margin: var(--space-2xs) 0 0; color: var(--color-danger); font-size: var(--text-sm); }
+.error:empty { display: none; }
+.banner { margin: 0 0 var(--space-lg); padding: var(--space-xs) var(--space-sm); border: 1px solid var(--color-rule-strong); border-radius: var(--radius); font-size: var(--text-sm); }
+
+/* ---------- receive ---------- */
+.btn.large { min-height: 52px; padding: 0 var(--space-lg); font-size: var(--text-base); }
+.optional { font-weight: 400; color: var(--color-muted); }
+
+/* show / hide a secret with the familiar eye, inside the field */
+.reveal-wrap { position: relative; text-align: left; }
+.reveal-wrap textarea, .reveal-wrap .secret { padding-right: 3.25rem; }
+.field-label { text-align: left; }
+.eye {
+  position: absolute; top: var(--space-2xs); right: var(--space-2xs);
+  display: grid; place-items: center; width: 38px; height: 38px;
+  background: none; border: 0; border-radius: var(--radius); cursor: pointer; color: var(--color-muted);
+  transition: color var(--dur-hover) var(--ease-out), background-color var(--dur-hover) var(--ease-out);
+}
+@media (hover: hover) { .eye:hover { color: var(--color-ink); background: var(--color-rule); } }
+.eye svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.eye .i-hide, .eye[aria-pressed="true"] .i-show { display: none; }
+.eye[aria-pressed="true"] .i-hide { display: block; }
+
+/* ---------- after an action: the intro leaves, the result takes its place ---------- */
+.result { text-align: left; }
+.result .row { justify-content: flex-start; }
+.back {
+  display: inline-flex; align-items: center; gap: var(--space-3xs);
+  min-height: 40px; padding: 0 var(--space-xs) 0 var(--space-3xs); margin-left: calc(-1 * var(--space-3xs));
+  background: none; border: 0; border-radius: var(--radius); cursor: pointer;
+  font: 500 var(--text-sm)/1 var(--font-body); color: var(--color-muted);
+  transition: color var(--dur-hover) var(--ease-out), background-color var(--dur-hover) var(--ease-out);
+}
+@media (hover: hover) { .back:hover { color: var(--color-ink); background: var(--color-field); } }
+.back svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform var(--dur-hover) var(--ease-out); }
+@media (hover: hover) { .back:hover svg { transform: translateX(-2px); } }
+.result-head { text-align: center; margin: var(--space-sm) 0 var(--space-lg); }
+.result-head .sub { margin-bottom: 0; }
+.mark { display: block; width: 3.5rem; height: 3.5rem; margin: 0 auto var(--space-sm); overflow: visible; }
+.mark-c { fill: var(--color-icon-active); }
+.mark-k { fill: none; stroke: var(--color-illo-paper); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+.result:not([hidden]) .mark { animation: mark-pop 420ms var(--ease-snap); }
+.result:not([hidden]) .mark-k { animation: mark-draw 360ms var(--ease-out) 160ms both; }
+@keyframes mark-pop { from { transform: scale(0.6) rotate(-12deg); opacity: 0; } }
+@keyframes mark-draw { from { stroke-dashoffset: 1; } }
+.link-box {
+  display: flex; align-items: center; gap: var(--space-2xs);
+  padding: var(--space-2xs) var(--space-2xs) var(--space-2xs) var(--space-sm);
+  background: var(--color-field); border: 1px solid var(--color-rule-strong); border-radius: var(--radius);
+}
+.link-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 500 var(--text-sm)/1.4 var(--font-mono); color: var(--color-muted); }
+.link-box .btn { min-height: 38px; padding: 0 var(--space-sm); }
+.result-fields { margin-top: var(--space-lg); }
+.fact { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-sm); margin-top: var(--space-md); padding: var(--space-xs) 0; border-top: 1px solid var(--color-rule); border-bottom: 1px solid var(--color-rule); font-size: var(--text-sm); color: var(--color-muted); text-align: left; }
+.fact .code-inline { font-size: var(--text-base); letter-spacing: 0.04em; }
+.fact-note { margin-top: var(--space-2xs); text-align: left; }
+.next { margin: var(--space-lg) 0 0; color: var(--color-muted); font-size: var(--text-sm); }
+#lockForm .row { margin-top: var(--space-md); }
+
+.code { display: block; margin: var(--space-3xs) 0 0; font: 600 var(--text-code)/1.2 var(--font-mono); letter-spacing: 0.04em; color: var(--color-brass); overflow-wrap: anywhere; }
+.result a, .foot a { color: inherit; text-underline-offset: 3px; }
+
+.mine { margin-top: var(--space-2xl); }
+.mine h2 { margin: 0 0 var(--space-2xs); font-size: var(--text-sm); font-weight: 600; color: var(--color-muted); }
+ul.rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--color-rule); }
+li.item {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--space-sm);
+  border-bottom: 1px solid var(--color-rule);
+}
+li.item.is-fresh { animation: fresh 1.2s var(--ease-out); }
+@keyframes fresh { from { background: color-mix(in oklch, var(--color-brass) 16%, transparent); } to { background: transparent; } }
+.r-code { font: 600 var(--text-sm)/1.4 var(--font-mono); color: var(--color-brass); white-space: nowrap; }
+.r-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--text-sm); }
+.r-name.unnamed { color: var(--color-muted); }
+.r-acts { display: flex; gap: var(--space-sm); }
+
+.foot {
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: var(--space-sm) var(--space-lg);
+  margin-top: var(--space-2xl); padding-top: var(--space-md); border-top: 1px solid var(--color-rule);
+}
+.foot p { margin: 0; }
+.foot-main { flex: 1 1 18rem; max-width: 28rem; }
+.foot-name { margin: 0 0 var(--space-3xs); font-weight: 700; font-stretch: var(--stretch-display); letter-spacing: 0.02em; }
+.foot-acro { margin-left: var(--space-2xs); font-weight: 500; font-size: var(--text-xs); letter-spacing: 0.01em; color: var(--color-brass); }
+/* PSIU as a street tag: brass fill, fat ink outline, steel extrusion, outer halo */
+.wordmark { position: relative; display: inline-block; padding: 0.15em 0.2em 0.2em; }
+.wordmark abbr { text-decoration: none; }
+.tag {
+  display: inline-block;
+  font: 400 2rem/1 var(--font-tag); letter-spacing: 0.02em;
+  color: var(--color-tag-fill);
+  -webkit-text-stroke: 0.09em var(--color-tag-line);
+  paint-order: stroke fill;
+  text-shadow:
+    0.04em 0.04em 0 var(--color-tag-line), 0.08em 0.08em 0 var(--color-tag-depth),
+    0.1em 0.1em 0 var(--color-tag-depth), 0.12em 0.12em 0 var(--color-tag-line);
+  filter:
+    drop-shadow(0.06em 0 0 var(--color-tag-halo)) drop-shadow(-0.06em 0 0 var(--color-tag-halo))
+    drop-shadow(0 0.06em 0 var(--color-tag-halo)) drop-shadow(0 -0.06em 0 var(--color-tag-halo));
+  transform: rotate(-5deg);
+  transition: transform 260ms var(--ease-snap);
+}
+.tag-sm { font-size: 1.35rem; transform: rotate(-4deg); margin-right: var(--space-2xs); }
+@media (hover: hover) { .wordmark:hover .tag { transform: rotate(-2deg) scale(1.04); } }
+
+.foot-meta { display: flex; flex-direction: column; align-items: end; text-align: right; }
+.foot-meta .link { min-height: 32px; }
+.social { display: flex; gap: var(--space-md); margin-top: var(--space-2xs) !important; }
+.social a {
+  display: inline-flex; align-items: center; gap: var(--space-3xs);
+  font-size: var(--text-sm); color: var(--color-muted); text-decoration: none;
+  transition: color var(--dur-hover) var(--ease-out);
+}
+.social svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+@media (hover: hover) { .social a:hover { color: var(--color-ink); } }
+
+/* ---------- modal: centred card on desktop, bottom sheet on mobile ---------- */
+.sheet {
+  width: min(32rem, calc(100% - 2 * var(--space-sm)));
+  max-height: min(40rem, calc(100dvh - 2 * var(--space-lg)));
+  margin: auto; padding: var(--space-lg);
+  border: 1px solid var(--color-rule); border-radius: 14px;
+  background: var(--color-paper); color: var(--color-ink);
+  box-shadow: 0 24px 60px -20px var(--color-shadow);
+  overflow: auto;
+}
+.sheet::backdrop { background: var(--color-scrim); }
+.sheet[open] { animation: sheet-in 300ms var(--ease-out); }
+.sheet[open]::backdrop { animation: fade-in 300ms var(--ease-out); }
+.sheet.closing { animation: sheet-out 180ms var(--ease-in) forwards; }
+.sheet.closing::backdrop { animation: fade-out 180ms var(--ease-in) forwards; }
+@keyframes sheet-in { from { opacity: 0; transform: translateY(12px) scale(0.98); } }
+@keyframes sheet-out { to { opacity: 0; transform: translateY(8px) scale(0.98); } }
+@keyframes fade-in { from { opacity: 0; } }
+@keyframes fade-out { to { opacity: 0; } }
+.sheet-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); margin-bottom: var(--space-md); }
+.sheet h2 { margin: 0; font-size: var(--text-lg); font-weight: 650; font-stretch: var(--stretch-display); letter-spacing: -0.02em; }
+.sheet-close {
+  appearance: none; display: grid; place-items: center; width: 40px; height: 40px; margin-right: calc(-1 * var(--space-2xs));
+  background: none; border: 0; border-radius: 50%; color: var(--color-muted); cursor: pointer;
+  transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out);
+}
+.sheet-close:hover { background: var(--color-field); color: var(--color-ink); }
+.sheet-close svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+.sheet .row { margin-top: var(--space-lg); }
+body:has(.sheet[open]) { overflow: hidden; }
+#openResult { margin-top: var(--space-xl); }
+#openFrom { margin-bottom: var(--space-2xs); }
+.secret {
+  margin: 0; padding: var(--space-sm);
+  background: var(--color-field); border-radius: var(--radius);
+  font: 500 var(--text-base)/1.5 var(--font-mono);
+  white-space: pre-wrap; overflow-wrap: anywhere; max-height: 14em; overflow: auto;
+}
+.secret.masked { color: var(--color-muted); letter-spacing: 0.12em; }
+
+/* ---------- send ---------- */
+.code-block { margin: var(--space-md) 0 var(--space-lg); }
+.code-block .code { margin-bottom: var(--space-3xs); }
+.field-head { display: flex; align-items: center; justify-content: space-between; }
+.field-head label { margin: 0; }
+.field-head .link { min-height: 36px; }
+.field-head + textarea { margin-top: var(--space-2xs); }
+.sealed {
+  margin: 0; padding: var(--space-sm);
+  background: var(--color-field); border-radius: var(--radius);
+  font: 500 var(--text-sm)/1.6 var(--font-mono);
+  overflow-wrap: anywhere; white-space: pre-wrap; user-select: all;
+  max-height: 10em; overflow: auto;
+}
+
+/* ---------- about ---------- */
+ol.how { margin: 0 0 var(--space-lg); padding-left: 1.25em; }
+ol.how li + li { margin-top: var(--space-2xs); }
+ol.how li strong { font-weight: 600; }
+.about details { margin-top: var(--space-md); border-top: 1px solid var(--color-rule); padding-top: var(--space-sm); }
+.about summary { cursor: pointer; font-weight: 600; font-size: var(--text-sm); }
+.about details p { margin-top: var(--space-2xs); }
+.about code { font-family: var(--font-mono); font-size: 0.9em; overflow-wrap: anywhere; }
+
+/* ---------- toast ---------- */
+.toast {
+  position: fixed; left: 50%; bottom: var(--space-md); z-index: var(--z-toast);
+  display: flex; align-items: center; gap: var(--space-md);
+  max-width: calc(100% - 2 * var(--space-sm));
+  padding: var(--space-xs) var(--space-md);
+  background: var(--color-toast); color: var(--color-on-toast);
+  border-radius: var(--radius); font-size: var(--text-sm); font-weight: 500;
+  opacity: 0; transform: translate(-50%, 8px); pointer-events: none;
+  transition: opacity var(--dur-short) var(--ease-out), transform var(--dur-short) var(--ease-out);
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.toast button {
+  appearance: none; background: none; border: 0; padding: 0; cursor: pointer;
+  color: var(--color-toast-action); font: 700 var(--text-sm)/1 var(--font-body); white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  :root { --art-w: 7rem; }
+  .has-art .sub { padding-right: 0; }
+  .wrap { padding-top: var(--space-md); }
+  .top { margin-bottom: var(--space-lg); }
+  /* thumb-reach tab bar */
+  body { padding-bottom: calc(4.25rem + env(safe-area-inset-bottom)); }
+  [role="tablist"] {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: var(--z-nav);
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0;
+    padding: 0 var(--space-2xs) env(safe-area-inset-bottom);
+    background: var(--color-paper);
+    border-top: 1px solid var(--color-rule);
+  }
+  [role="tab"] {
+    flex-direction: column; gap: var(--space-3xs);
+    display: flex; align-items: center; justify-content: center;
+    min-height: 4.25rem; padding: var(--space-2xs) 0;
+    font-size: var(--text-xs);
+  }
+  [role="tab"][aria-selected="true"] { color: var(--color-accent); }
+  [role="tab"] .tab-ico { transition: transform 260ms var(--ease-out); }
+  [role="tab"][aria-selected="true"] .tab-ico { transform: translateY(-2px); }
+  .tab-ink { top: -1px; bottom: auto; background: var(--color-accent); border-radius: 0 0 2px 2px; }
+  .tab-ico { display: block; }
+  .toast { bottom: calc(4.25rem + env(safe-area-inset-bottom) + var(--space-sm)); }
+  .foot { flex-direction: column; align-items: start; gap: var(--space-xs); margin-top: var(--space-xl); }
+  .foot-main { flex: none; }
+  .foot-meta { align-items: start; text-align: left; }
+  .sheet {
+    width: 100%; max-width: none; max-height: 88dvh;
+    margin: auto 0 0; border-radius: 18px 18px 0 0; border-bottom: 0;
+    padding: var(--space-md) var(--space-sm) calc(var(--space-md) + env(safe-area-inset-bottom));
+  }
+  .sheet[open] { animation-name: sheet-up; }
+  .sheet.closing { animation-name: sheet-down; }
+  @keyframes sheet-up { from { transform: translateY(100%); } }
+  @keyframes sheet-down { to { transform: translateY(100%); } }
+  .sheet .btn { width: 100%; }
+      #newBtn, #lockBtn { width: 100%; }
+  #openBtn { width: 100%; }
+  li.item { grid-template-columns: minmax(0, 1fr) auto; row-gap: 0; padding-top: var(--space-2xs); }
+  .r-name { grid-column: 1; grid-row: 2; }
+  .r-acts { grid-column: 2; grid-row: 1 / 3; flex-direction: column; gap: 0; align-items: end; }
+  .r-acts .link { min-height: 36px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; }
+  .btn[aria-busy="true"]::after { animation-duration: 1.4s !important; }
+  ::view-transition-old(stage), ::view-transition-new(stage) { animation: none; }
+}
+</style>
+</head>
+<body>
+<!-- "magazine cutout": grow the shape, roughen the edge with noise, fill it with paper, drop a short shadow -->
+<svg class="defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <filter id="cutout" x="-25%" y="-25%" width="150%" height="150%" color-interpolation-filters="sRGB">
+    <feMorphology in="SourceAlpha" operator="dilate" radius="3.4" result="grown"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.07" numOctaves="2" seed="7" result="noise"/>
+    <feDisplacementMap in="grown" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G" result="rough"/>
+    <feFlood class="cut-halo" result="halo"/>
+    <feComposite in="halo" in2="rough" operator="in" result="paper"/>
+    <feGaussianBlur in="rough" stdDeviation="1.4" result="blur"/>
+    <feOffset in="blur" dx="0.6" dy="2.2" result="drop"/>
+    <feFlood class="cut-shadow" result="shade"/>
+    <feComposite in="shade" in2="drop" operator="in" result="shadow"/>
+    <feMerge><feMergeNode in="shadow"/><feMergeNode in="paper"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="cutout-sm" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
+    <feMorphology in="SourceAlpha" operator="dilate" radius="1.05" result="grown"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.22" numOctaves="2" seed="3" result="noise"/>
+    <feDisplacementMap in="grown" in2="noise" scale="1.1" xChannelSelector="R" yChannelSelector="G" result="rough"/>
+    <feFlood class="cut-halo" result="halo"/>
+    <feComposite in="halo" in2="rough" operator="in" result="paper"/>
+    <feGaussianBlur in="rough" stdDeviation="0.6" result="blur"/>
+    <feOffset in="blur" dy="0.9" result="drop"/>
+    <feFlood class="cut-shadow" result="shade"/>
+    <feComposite in="shade" in2="drop" operator="in" result="shadow"/>
+    <feMerge><feMergeNode in="shadow"/><feMergeNode in="paper"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</svg>
+<div class="wrap">
+  <header class="top">
+    <a class="wordmark" href="#" aria-label="PSIU, início"><abbr class="tag" title="Privado, Seguro, Inviolável, Único">PSIU</abbr></a>
+    <nav role="tablist" aria-label="Seções">
+      <button role="tab" id="tab-receive" aria-controls="panel-receive" data-route="">
+        <svg class="tab-ico" viewBox="0 0 24 24" aria-hidden="true"><g filter="url(#cutout-sm)"><path d="M8 11V7.5a4 4 0 0 1 7.6-1.8"/><rect x="5" y="11" width="14" height="10" rx="2.5"/></g></svg>
+        <span>Pedir</span>
+      </button>
+      <button role="tab" id="tab-send" aria-controls="panel-send" data-route="enviar">
+        <svg class="tab-ico" viewBox="0 0 24 24" aria-hidden="true"><g filter="url(#cutout-sm)"><path d="M21 3 3 10.5l7 2.5 2.5 7z"/><path d="m10 13 5-5"/></g></svg>
+        <span>Enviar</span>
+      </button>
+      <button role="tab" id="tab-open" aria-controls="panel-open" data-route="abrir">
+        <svg class="tab-ico" viewBox="0 0 24 24" aria-hidden="true"><g filter="url(#cutout-sm)"><circle cx="7.5" cy="12" r="3.5"/><path d="M11 12h10M18 12v3M21 12v2"/></g></svg>
+        <span>Abrir</span>
+      </button>
+      <span class="tab-ink" id="tabInk" aria-hidden="true"></span>
+    </nav>
+  </header>
+
+  <p class="banner" id="storageBanner" role="alert" hidden>Este navegador não guarda dados. Não feche a aba até abrir o segredo.</p>
+  <p class="banner" id="cryptoBanner" role="alert" hidden>Criptografia indisponível. Abra por HTTPS num navegador atualizado.</p>
+
+  <div class="stage" id="stage">
+
+  <!-- ===== Pedir ===== -->
+  <section role="tabpanel" id="panel-receive" class="has-art" aria-labelledby="tab-receive" hidden>
+    <div id="askStart">
+    <svg class="art" id="artPedir" viewBox="0 0 160 120" aria-hidden="true" focusable="false">
+      <ellipse class="f-fill" cx="58" cy="106" rx="34" ry="4"/>
+      <g filter="url(#cutout)">
+      <path class="sh-out" d="M42 44V34a16 16 0 0 1 32 0v26"/>
+      <path class="sh-in" d="M42 44V34a16 16 0 0 1 32 0v26"/>
+      <rect class="f-brass ln" x="30" y="52" width="56" height="48" rx="9"/>
+      <path class="glint" d="M39 60h30"/>
+      <circle class="f-ink" cx="58" cy="73" r="5"/>
+      <path class="f-ink" d="M55.6 76h4.8l1.4 11h-7.6z"/>
+      <path class="ln thin dash trail" d="M80 40C96 18 114 13 128 22"/>
+      <g class="plane">
+        <path class="f-paper ln" d="M124 22 150 12 140 38 134 28z"/>
+        <path class="ln thin" d="M134 28 150 12"/>
+      </g>
+      </g>
+    </svg>
+      <h1>Pedir um segredo</h1>
+      <p class="sub">Crie um link e mande para quem tem a senha. Ela volta trancada, e só você abre.</p>
+      <form id="newForm" novalidate>
+        <button class="btn primary large" type="submit" id="newBtn">Criar link de pedido</button>
+      </form>
+      <div class="mine" id="mine" hidden>
+        <h2>Seus pedidos</h2>
+        <ul class="rows" id="rows"></ul>
+      </div>
+    </div>
+
+    <div class="result" id="fresh" hidden>
+      <button class="back" type="button" id="freshBack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>Voltar</button>
+      <div class="result-head">
+        <svg class="mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g filter="url(#cutout)"><circle class="mark-c" cx="24" cy="24" r="17"/><path class="mark-k" pathLength="1" d="M16.5 24.5l5 5L31.5 19"/></g></svg>
+        <h1 id="freshTitle" tabindex="-1">Link copiado</h1>
+        <p class="sub" id="freshLead">Mande para quem tem o segredo, em qualquer conversa.</p>
+      </div>
+      <div class="link-box">
+        <span class="link-text" id="freshLink"></span>
+        <button class="btn" type="button" id="freshCopy">Copiar</button>
+      </div>
+      <div class="row" id="freshShareRow" hidden><button class="btn" type="button" id="freshShare">Compartilhar</button></div>
+      <div class="result-fields">
+        <label for="freshLabel">Para quem é? <span class="optional">· opcional, só você vê</span></label>
+        <input type="text" id="freshLabel" maxlength="60" placeholder="Ex.: Ana, senha do Stripe" autocomplete="off">
+      </div>
+      <div class="fact">
+        <span>Código de conferência</span>
+        <span class="code-inline" id="freshFp"></span>
+      </div>
+      <p class="muted fact-note">A pessoa vê o mesmo código. Para ter certeza de que o link não foi trocado, confirmem por ligação.</p>
+      <p class="next">Quando a pessoa te mandar o link de volta, é só abrir. O segredo aparece aqui, neste navegador.</p>
+    </div>
+  </section>
+
+  <!-- ===== Enviar ===== -->
+  <section role="tabpanel" id="panel-send" class="has-art" aria-labelledby="tab-send" hidden>
+    <svg class="art is-open" id="artEnviar" viewBox="0 0 160 120" aria-hidden="true" focusable="false">
+      <ellipse class="f-fill" cx="80" cy="106" rx="52" ry="4"/>
+      <g filter="url(#cutout)">
+      <g transform="rotate(-5 62 52)">
+        <rect class="f-paper ln" x="18" y="22" width="88" height="58" rx="4"/>
+        <circle class="f-ink" cx="32" cy="44" r="2.6"/><circle class="f-ink" cx="41" cy="44" r="2.6"/>
+        <circle class="f-ink" cx="50" cy="44" r="2.6"/><circle class="f-ink" cx="59" cy="44" r="2.6"/>
+        <circle class="f-ink" cx="68" cy="44" r="2.6"/><circle class="f-ink" cx="77" cy="44" r="2.6"/>
+        <rect class="f-fill" x="30" y="56" width="44" height="3.5" rx="1.75"/>
+        <rect class="f-fill" x="30" y="64" width="28" height="3.5" rx="1.75"/>
+      </g>
+      <g class="shackle">
+        <path class="sh-out" d="M101 64V50a14 14 0 0 1 28 0v14"/>
+        <path class="sh-in" d="M101 64V50a14 14 0 0 1 28 0v14"/>
+      </g>
+      <rect class="f-brass ln" x="88" y="62" width="54" height="42" rx="8"/>
+      <path class="glint" d="M96 69h28"/>
+      <circle class="f-ink" cx="115" cy="80" r="4.5"/>
+      <path class="f-ink" d="M112.8 83h4.4l1.3 10h-7z"/>
+      </g>
+    </svg>
+    <div id="sendPaste">
+      <h1>Enviar um segredo</h1>
+      <p class="sub" id="pasteSub">Cole o link que te mandaram.</p>
+      <form id="pasteForm" novalidate>
+        <label for="pasteInput" class="sr-only">Link do pedido</label>
+        <input type="text" class="mono" id="pasteInput" placeholder="https://…#k…" autocomplete="off" spellcheck="false" autocapitalize="off" aria-describedby="pasteMsg">
+        <p class="error" id="pasteMsg" role="alert"></p>
+        <div class="row"><button class="btn primary" type="submit">Continuar</button></div>
+      </form>
+    </div>
+
+    <div id="sendForm" hidden>
+      <h1 tabindex="-1" id="sendTitle">Enviar um segredo</h1>
+      <p class="sub" id="sendFpNote">Escreva a senha. Ela é trancada aqui e só quem pediu consegue abrir.</p>
+      <form id="lockForm" novalidate>
+        <label for="secretInput" class="field-label">Segredo</label>
+        <div class="reveal-wrap">
+          <textarea id="secretInput" class="mono masked" placeholder="sk_live_…" autocomplete="off" spellcheck="false" autocapitalize="off" aria-describedby="lockMsg"></textarea>
+          <button class="eye" type="button" id="maskToggle" aria-pressed="false" aria-controls="secretInput" aria-label="Mostrar segredo"><svg class="i-show" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="i-hide" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.7 10.7 0 0 1 12 5c6.4 0 10 7 10 7a17.7 17.7 0 0 1-3.2 4.2M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7c1.7 0 3.2-.5 4.5-1.2"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button>
+        </div>
+        <p class="error" id="lockMsg" role="alert"></p>
+        <div class="fact">
+          <span>Código de conferência</span>
+          <span class="code-inline" id="sendFp"></span>
+        </div>
+        <p class="muted fact-note" id="sendOwnNote">Quem pediu vê o mesmo código. Se quiser ter certeza, confirmem por ligação.</p>
+        <div class="row"><button class="btn primary large" type="submit" id="lockBtn">Trancar e copiar link</button></div>
+      </form>
+    </div>
+
+    <div class="result" id="sendDone" hidden>
+      <button class="back" type="button" id="againBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>Voltar</button>
+      <div class="result-head">
+        <svg class="mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g filter="url(#cutout)"><circle class="mark-c" cx="24" cy="24" r="17"/><path class="mark-k" pathLength="1" d="M16.5 24.5l5 5L31.5 19"/></g></svg>
+        <h1 tabindex="-1" id="doneTitle">Link de resposta copiado</h1>
+        <p class="sub" id="doneLead">Mande de volta para quem pediu. Só o navegador dessa pessoa abre.</p>
+      </div>
+      <div class="link-box">
+        <span class="link-text" id="replyLink"></span>
+        <button class="btn" type="button" id="copySealedBtn">Copiar</button>
+      </div>
+      <div class="row" id="shareRow" hidden><button class="btn" type="button" id="shareBtn">Compartilhar</button></div>
+      <p class="next">Nada ficou guardado aqui. Se o link se perder, é só trancar de novo.</p>
+    </div>
+  </section>
+
+  <!-- ===== Abrir ===== -->
+  <section role="tabpanel" id="panel-open" class="has-art" aria-labelledby="tab-open" hidden>
+    <div id="openStart">
+    <svg class="art" id="artAbrir" viewBox="0 0 160 120" aria-hidden="true" focusable="false">
+      <ellipse class="f-fill" cx="88" cy="106" rx="48" ry="4"/>
+      <g filter="url(#cutout)">
+      <g class="shackle">
+        <path class="sh-out" d="M85 58V44a15 15 0 0 1 30 0v14"/>
+        <path class="sh-in" d="M85 58V44a15 15 0 0 1 30 0v14"/>
+      </g>
+      <rect class="f-brass ln" x="72" y="56" width="56" height="48" rx="9"/>
+      <path class="glint" d="M81 64h30"/>
+      <g class="key">
+        <rect class="f-fill ln" x="40" y="73" width="60" height="6" rx="2"/>
+        <rect class="f-fill ln" x="64" y="79" width="5" height="6" rx="1"/>
+        <rect class="f-fill ln" x="74" y="79" width="4" height="4" rx="1"/>
+        <circle class="f-fill ln" cx="30" cy="76" r="11"/>
+        <circle class="f-paper ln thin" cx="30" cy="76" r="3.5"/>
+      </g>
+      </g>
+    </svg>
+      <h1>Abrir um segredo</h1>
+      <p class="sub">Abra o link que te mandaram de volta, ou cole ele aqui.</p>
+      <form id="openForm" novalidate>
+        <label for="openInput" class="sr-only">Link de resposta</label>
+        <textarea id="openInput" class="mono" placeholder="Cole o link de resposta" autocomplete="off" spellcheck="false" autocapitalize="off" aria-describedby="openMsg"></textarea>
+        <p class="error" id="openMsg" role="alert"></p>
+        <div class="row"><button class="btn primary large" type="submit" id="openBtn">Abrir</button></div>
+      </form>
+    </div>
+
+    <div class="result" id="openResult" hidden>
+      <button class="back" type="button" id="openAnotherBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>Voltar</button>
+      <div class="result-head">
+        <svg class="mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g filter="url(#cutout)"><circle class="mark-c" cx="24" cy="24" r="17"/><path class="mark-k" pathLength="1" d="M16.5 24.5l5 5L31.5 19"/></g></svg>
+        <h1 tabindex="-1" id="openTitle">Segredo aberto</h1>
+        <p class="sub" id="openFrom"></p>
+      </div>
+      <div class="reveal-wrap">
+        <pre class="secret masked" id="openSecret" tabindex="0" aria-label="Segredo"></pre>
+        <button class="eye" type="button" id="toggleSecretBtn" aria-pressed="false" aria-controls="openSecret" aria-label="Mostrar segredo"><svg class="i-show" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="i-hide" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.7 10.7 0 0 1 12 5c6.4 0 10 7 10 7a17.7 17.7 0 0 1-3.2 4.2M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7c1.7 0 3.2-.5 4.5-1.2"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button>
+      </div>
+      <div class="row">
+        <button class="btn primary" type="button" id="copySecretBtn">Copiar segredo</button>
+      </div>
+      <p class="next">Já usou? Apague o pedido. Assim o link de resposta não abre mais.</p>
+      <div class="row"><button class="link danger" type="button" id="destroyOpenBtn">Apagar este pedido</button></div>
+    </div>
+  </section>
+
+  </div>
+
+  <footer class="foot">
+    <div class="foot-main">
+      <p class="foot-name"><span class="tag tag-sm">PSIU</span> <span class="foot-acro">Privado · Seguro · Inviolável · Único</span></p>
+      <p class="muted">Troca de senhas, tokens e chaves de API com criptografia no seu navegador. Nada é enviado a servidor.</p>
+    </div>
+    <div class="foot-meta">
+      <button class="link" type="button" id="howOpen" aria-haspopup="dialog" aria-controls="howDialog">Como funciona</button>
+      <p class="muted">© <span id="year">2026</span> · Feito por Ezequiel Magalhães</p>
+      <p class="social">
+        <a href="https://www.linkedin.com/in/ezequiel-magalhaes/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn de Ezequiel Magalhães (abre em nova aba)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 10.5V17M8 7.5v.01M12 17v-6.5M12 13.5a2.5 2.5 0 0 1 5 0V17"/></svg>LinkedIn</a>
+        <a href="https://github.com/zeekias" target="_blank" rel="noopener noreferrer" aria-label="GitHub de Ezequiel Magalhães (abre em nova aba)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>GitHub</a>
+      </p>
+    </div>
+  </footer>
+</div>
+
+<dialog class="sheet about" id="howDialog" aria-labelledby="howTitle">
+  <div class="sheet-head">
+    <h2 id="howTitle">Como funciona</h2>
+    <button class="sheet-close" type="button" id="howClose" aria-label="Fechar">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <ol class="how">
+    <li><strong>Pedir.</strong> Você cria um link e manda para quem tem a senha.</li>
+    <li><strong>Enviar.</strong> A pessoa abre o link, escreve a senha e te devolve um texto trancado.</li>
+    <li><strong>Abrir.</strong> Você cola o texto aqui, no mesmo navegador, e lê a senha.</li>
+  </ol>
+  <p class="muted">O texto trancado pode passar por WhatsApp ou e-mail: sem este navegador, ninguém abre.</p>
+  <p class="muted" style="margin-top:var(--space-sm)">Os dois veem um código de conferência. Confirmem por ligação: se for igual, ninguém trocou o link no caminho.</p>
+  <details>
+    <summary>Detalhes técnicos</summary>
+    <p class="muted">ECDH P-256 com par efêmero, HKDF-SHA256 (salt = efêmera ‖ destinatário, info <code>cadeado-v1</code>) e AES-256-GCM com IV de 12 bytes. Formato <code>cad1.kid.efêmera.iv.cifrado</code> em base64url. A chave privada fica no <code>localStorage</code>; a CSP bloqueia conexões de rede.</p>
+  </details>
+  <div class="row"><button class="btn primary" type="button" id="howDone">Entendi</button></div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<template id="rowTpl">
+  <li class="item">
+    <span class="r-code"></span>
+    <span class="r-name"></span>
+    <span class="r-acts">
+      <button class="link act-copy" type="button">Copiar link</button>
+      <button class="link danger act-destroy" type="button">Apagar</button>
+    </span>
+  </li>
+</template>
+
+<script>
+"use strict";
+
+const FORMAT_PREFIX = "cad1";
+const HKDF_INFO = new TextEncoder().encode("cadeado-v1");
+const STORAGE_KEY = "cadeado.v1.keys";
+const KID_BYTES = 6;
+const IV_BYTES = 12;
+const P256_RAW_BYTES = 65;
+const CURVE = { name: "ECDH", namedCurve: "P-256" };
+const UNDO_MS = 6000;
+const TOAST_MS = 2600;
+const FEEDBACK_MS = 1800;
+const MAX_JOINED_LINES = 12;
+const SEALED_RE = /cad1\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/;
+const LINK_RE = /#k([A-Za-z0-9_-]+)/;
+const BARE_CODE_RE = /^k?([A-Za-z0-9_-]{80,})$/;
+const ROUTE_SEND = "enviar";
+const ROUTE_OPEN = "abrir";
+// A reply link carries the sealed text in the fragment (never sent to any server): #rcad1.…
+const ROUTE_REPLY = "r";
+const ROUTE_ABOUT = "sobre";
+const SHEET_CLOSE_MS = 180;
+
+const $ = (id) => document.getElementById(id);
+
+class CadeadoError extends Error {}
+
+// ---------- encoding ----------
+
+function toBase64Url(bytes) {
+  let bin = "";
+  for (const b of bytes) bin += String.fromCharCode(b);
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function fromBase64Url(str) {
+  if (!/^[A-Za-z0-9_-]+$/.test(str)) throw new CadeadoError("base64url");
+  let b64 = str.replace(/-/g, "+").replace(/_/g, "/");
+  while (b64.length % 4) b64 += "=";
+  const bin = atob(b64);
+  return Uint8Array.from(bin, (c) => c.charCodeAt(0));
+}
+
+function concatBytes(a, b) {
+  const out = new Uint8Array(a.length + b.length);
+  out.set(a, 0);
+  out.set(b, a.length);
+  return out;
+}
+
+function fingerprintOf(kidBytes) {
+  const hex = Array.from(kidBytes, (b) => b.toString(16).padStart(2, "0")).join("").toUpperCase();
+  return hex.match(/.{4}/g).join("-");
+}
+
+// Non-breaking hyphens keep a fingerprint on one line inside running text.
+function unbreakable(fingerprint) {
+  return fingerprint.replace(/-/g, "‑");
+}
+
+// ---------- crypto ----------
+
+async function kidOf(publicRaw) {
+  const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", publicRaw));
+  return digest.slice(0, KID_BYTES);
+}
+
+async function importPublicKey(publicRaw) {
+  if (publicRaw.length !== P256_RAW_BYTES || publicRaw[0] !== 0x04) throw new CadeadoError("public-key");
+  return crypto.subtle.importKey("raw", publicRaw, CURVE, true, []);
+}
+
+async function deriveAesKey(privateKey, peerPublicKey, ephemeralRaw, recipientRaw) {
+  const shared = await crypto.subtle.deriveBits({ name: "ECDH", public: peerPublicKey }, privateKey, 256);
+  const hkdfKey = await crypto.subtle.importKey("raw", shared, "HKDF", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey(
+    { name: "HKDF", hash: "SHA-256", salt: concatBytes(ephemeralRaw, recipientRaw), info: HKDF_INFO },
+    hkdfKey,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["encrypt", "decrypt"]
+  );
+}
+
+async function generateLock() {
+  const pair = await crypto.subtle.generateKey(CURVE, true, ["deriveBits"]);
+  const publicRaw = new Uint8Array(await crypto.subtle.exportKey("raw", pair.publicKey));
+  const privateJwk = await crypto.subtle.exportKey("jwk", pair.privateKey);
+  const kidBytes = await kidOf(publicRaw);
+  return { kid: toBase64Url(kidBytes), fingerprint: fingerprintOf(kidBytes), publicKey: toBase64Url(publicRaw), privateJwk };
+}
+
+async function sealSecret(recipientRaw, plaintext) {
+  const recipientKey = await importPublicKey(recipientRaw);
+  const ephemeral = await crypto.subtle.generateKey(CURVE, true, ["deriveBits"]);
+  const ephemeralRaw = new Uint8Array(await crypto.subtle.exportKey("raw", ephemeral.publicKey));
+  const aesKey = await deriveAesKey(ephemeral.privateKey, recipientKey, ephemeralRaw, recipientRaw);
+  const iv = crypto.getRandomValues(new Uint8Array(IV_BYTES));
+  const ciphertext = new Uint8Array(
+    await crypto.subtle.encrypt({ name: "AES-GCM", iv }, aesKey, new TextEncoder().encode(plaintext))
+  );
+  const kid = toBase64Url(await kidOf(recipientRaw));
+  return [FORMAT_PREFIX, kid, toBase64Url(ephemeralRaw), toBase64Url(iv), toBase64Url(ciphertext)].join(".");
+}
+
+const TAMPERED = "O link veio cortado ou foi alterado. Peça para a pessoa mandar de novo.";
+const NOT_SEALED = "Isso não é um link de resposta do PSIU. Confira se copiou a mensagem certa.";
+
+// Tolerates text around the code (e.g. "segue: cad1.… valeu") and invisible characters added by chat
+// apps. A line break may be noise inside the code or a real boundary before the next line, so both
+// readings are returned (the code's line joined with 0, 1, 2… following lines); AES-GCM tells which
+// one is intact.
+function sealedCandidates(text) {
+  const lines = text.replace(/[­​-‍⁠﻿]/g, "").split(/\r?\n/).map((l) => l.trim());
+  const start = lines.findIndex((l) => l.includes(`${FORMAT_PREFIX}.`));
+  if (start < 0) return [];
+  const found = [];
+  for (let end = start + 1; end <= Math.min(lines.length, start + MAX_JOINED_LINES); end++) {
+    const match = lines.slice(start, end).join("").match(SEALED_RE);
+    if (match) found.push(match[0]);
+  }
+  return [...new Set(found)];
+}
+
+function parseSealed(found) {
+  const [, kid, ephemeral, iv, ciphertext] = found.split(".");
+  try {
+    if (fromBase64Url(kid).length !== KID_BYTES) throw new CadeadoError("kid");
+    return { kid, ephemeralRaw: fromBase64Url(ephemeral), iv: fromBase64Url(iv), ciphertext: fromBase64Url(ciphertext) };
+  } catch {
+    throw new CadeadoError(TAMPERED);
+  }
+}
+
+// Which request should have opened this? Say it plainly, depending on what this browser holds.
+function missingRequestMessage(count) {
+  if (count === 0) {
+    return "Este navegador não tem nenhum pedido seu. Abra o link no navegador onde você criou o pedido.";
+  }
+  const which = count === 1 ? "O seu pedido neste navegador não abre" : `Nenhum dos seus ${count} pedidos neste navegador abre`;
+  return `${which} este segredo. Ele foi pedido em outro navegador, ou o pedido foi apagado.`;
+}
+
+async function openSealed(text) {
+  const candidates = sealedCandidates(text);
+  if (!candidates.length) throw new CadeadoError(NOT_SEALED);
+  let lastError;
+  for (const candidate of candidates) {
+    try {
+      return await openCandidate(candidate);
+    } catch (err) {
+      lastError = err;
+    }
+  }
+  throw lastError;
+}
+
+async function openCandidate(found) {
+  const sealed = parseSealed(found);
+  const entry = keyStore.find(sealed.kid);
+  if (!entry) {
+    throw new CadeadoError(
+      missingRequestMessage(keyStore.all().length)
+    );
+  }
+  if (sealed.iv.length !== IV_BYTES) throw new CadeadoError(TAMPERED);
+
+  let ephemeralKey;
+  try {
+    ephemeralKey = await importPublicKey(sealed.ephemeralRaw);
+  } catch {
+    throw new CadeadoError(TAMPERED);
+  }
+  const privateKey = await crypto.subtle.importKey("jwk", entry.privateJwk, CURVE, false, ["deriveBits"]);
+  const aesKey = await deriveAesKey(privateKey, ephemeralKey, sealed.ephemeralRaw, fromBase64Url(entry.publicKey));
+  try {
+    const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: sealed.iv }, aesKey, sealed.ciphertext);
+    return { entry, secret: new TextDecoder().decode(plain) };
+  } catch {
+    throw new CadeadoError(TAMPERED);
+  }
+}
+
+// Accepts a full link, a bare "k…" code, or a chat message containing either.
+function extractPublicKey(text) {
+  const value = text.trim();
+  const fromLink = value.match(LINK_RE);
+  if (fromLink) return fromLink[1];
+  const bare = value.replace(/\s+/g, "").match(BARE_CODE_RE);
+  return bare ? bare[1] : null;
+}
+
+async function readRecipient(encoded) {
+  const raw = fromBase64Url(encoded);
+  await importPublicKey(raw);
+  const kidBytes = await kidOf(raw);
+  return { raw, encoded, kid: toBase64Url(kidBytes), fingerprint: fingerprintOf(kidBytes) };
+}
+
+// ---------- key storage (localStorage, memory fallback) ----------
+
+const keyStore = (() => {
+  let persistent = true;
+  let memory = [];
+  let onFallback = () => {};
+  try {
+    const probe = "cadeado.probe";
+    localStorage.setItem(probe, probe);
+    localStorage.removeItem(probe);
+  } catch {
+    persistent = false;
+  }
+
+  function all() {
+    if (!persistent) return memory;
+    try {
+      const list = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      return Array.isArray(list) ? list : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function save(list) {
+    if (persistent) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+        return;
+      } catch {
+        persistent = false;
+        onFallback();
+      }
+    }
+    memory = list;
+  }
+
+  return {
+    get persistent() { return persistent; },
+    set onFallback(fn) { onFallback = fn; },
+    all,
+    find: (kid) => all().find((k) => k.kid === kid),
+    add: (entry) => save([entry, ...all().filter((k) => k.kid !== entry.kid)]),
+    update: (kid, patch) => save(all().map((k) => (k.kid === kid ? { ...k, ...patch } : k))),
+    remove: (kid) => save(all().filter((k) => k.kid !== kid)),
+  };
+})();
+
+// ---------- UI helpers ----------
+
+const canShare = typeof navigator.share === "function";
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+const mobileNav = matchMedia("(max-width: 560px)");
+const EASE_OUT = "cubic-bezier(0.16, 1, 0.3, 1)";
+// Short, deliberate beat so creating / locking / opening is felt, not just instant.
+const ACTION_MIN_MS = 550;
+const ENTER_MS = 280;
+const EXIT_MS = 220;
+const STAGE_SLIDE_PX = 18;
+const MOBILE_INK_PX = 28;
+let switchingTab = false;
+
+let toastTimer;
+function toast(text, action) {
+  const el = $("toast");
+  el.replaceChildren(document.createTextNode(text));
+  if (action) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = action.label;
+    btn.addEventListener("click", () => {
+      hideToast();
+      action.run();
+    });
+    el.append(btn);
+  }
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(hideToast, action ? UNDO_MS : TOAST_MS);
+}
+
+function hideToast() {
+  clearTimeout(toastTimer);
+  $("toast").classList.remove("show");
+}
+
+function setError(el, text, field) {
+  const appearing = Boolean(text) && !el.textContent;
+  el.textContent = text || "";
+  if (field) field.setAttribute("aria-invalid", String(Boolean(text)));
+  if (appearing) enter(el);
+}
+
+// Something new on screen rises in gently; skipped while a tab transition already animates it.
+function enter(el) {
+  if (!el || reduceMotion.matches || switchingTab) return;
+  el.animate(
+    [{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "none" }],
+    { duration: ENTER_MS, easing: EASE_OUT }
+  );
+}
+
+async function writeClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand("copy");
+    ta.remove();
+    return ok;
+  }
+}
+
+// Feedback lands on the button that was pressed, where the eye already is.
+function flash(btn, text) {
+  const original = btn.dataset.label || btn.textContent;
+  btn.dataset.label = original;
+  btn.textContent = text;
+  btn.classList.add("is-done");
+  clearTimeout(btn._flash);
+  btn._flash = setTimeout(() => {
+    btn.textContent = original;
+    btn.classList.remove("is-done");
+  }, FEEDBACK_MS);
+}
+
+async function copyWithFeedback(btn, text) {
+  if (await writeClipboard(text)) {
+    flash(btn, "Copiado");
+    return true;
+  }
+  toast("Não deu para copiar. Selecione e copie à mão.");
+  return false;
+}
+
+// Restart a one-shot illustration animation.
+function replay(el, cls) {
+  el.classList.remove(cls);
+  void el.getBoundingClientRect();
+  el.classList.add(cls);
+}
+
+function lockLink(publicKey) {
+  return `${location.href.split("#")[0]}#k${publicKey}`;
+}
+
+function onCtrlEnter(el, fn) {
+  el.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      fn();
+    }
+  });
+}
+
+// ---------- tabs ----------
+
+const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+
+function selectTab(tab) {
+  for (const t of tabs) {
+    const selected = t === tab;
+    t.setAttribute("aria-selected", String(selected));
+    t.tabIndex = selected ? 0 : -1;
+    $(t.getAttribute("aria-controls")).hidden = !selected;
+  }
+}
+
+// Slide the single indicator under (desktop) or over (mobile bar) the selected tab.
+function placeInk(animate) {
+  const ink = $("tabInk");
+  const selected = tabs.find((t) => t.getAttribute("aria-selected") === "true");
+  ink.classList.toggle("no-anim", !animate || reduceMotion.matches);
+  if (!selected) {
+    ink.style.setProperty("--ink-w", 0);
+    return;
+  }
+  const width = mobileNav.matches ? MOBILE_INK_PX : selected.offsetWidth;
+  ink.style.setProperty("--ink-x", `${selected.offsetLeft + (selected.offsetWidth - width) / 2}px`);
+  ink.style.setProperty("--ink-w", width);
+}
+
+tabs.forEach((tab, i) => {
+  tab.addEventListener("click", () => {
+    // Coming back to "Enviar" keeps the lock that is already loaded.
+    const route = tab.dataset.route === ROUTE_SEND && recipient ? `k${recipient.encoded}` : tab.dataset.route;
+    location.hash = route;
+  });
+  tab.addEventListener("keydown", (e) => {
+    const moves = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 };
+    if (!(e.key in moves)) return;
+    e.preventDefault();
+    const next = tabs[(moves[e.key] + tabs.length) % tabs.length];
+    next.focus();
+    next.click();
+  });
+});
+
+// ---------- shared: start view ↔ result view ----------
+
+// After an action the intro leaves the scene and the result takes its place, with a way back.
+function showResult(startEl, resultEl, focusEl) {
+  startEl.hidden = true;
+  resultEl.hidden = false;
+  enter(resultEl);
+  window.scrollTo(0, 0);
+  focusEl?.focus({ preventScroll: true });
+}
+
+function showStart(startEl, resultEl, focusEl) {
+  resultEl.hidden = true;
+  startEl.hidden = false;
+  enter(startEl);
+  focusEl?.focus({ preventScroll: true });
+}
+
+// Visible loading for actions the person should *feel* happen. The real work (and the clipboard
+// write, which must stay close to the click) runs first; the result is revealed after a short beat.
+async function withLoading(btn, label, work) {
+  if (btn.dataset.working) return;
+  btn.dataset.working = "true";
+  btn.setAttribute("aria-busy", "true");
+  btn.setAttribute("aria-label", label);
+  const started = performance.now();
+  try {
+    const reveal = await work();
+    const left = ACTION_MIN_MS - (performance.now() - started);
+    if (left > 0 && !reduceMotion.matches) await new Promise((resolve) => setTimeout(resolve, left));
+    reveal?.();
+  } finally {
+    btn.removeAttribute("aria-busy");
+    btn.removeAttribute("aria-label");
+    delete btn.dataset.working;
+  }
+}
+
+// Eye toggle: pressed = secret visible; the icon shows what the next click does.
+function setEye(btn, visible) {
+  btn.setAttribute("aria-pressed", String(visible));
+  btn.setAttribute("aria-label", visible ? "Ocultar segredo" : "Mostrar segredo");
+  btn.title = visible ? "Ocultar" : "Mostrar";
+}
+
+function fillLinkBox(textEl, link) {
+  textEl.textContent = link;
+  textEl.title = link;
+}
+
+// ---------- pedir (receive) ----------
+
+let freshEntry = null;
+let highlightKid = null;
+
+function renderRows() {
+  const list = keyStore.all();
+  $("mine").hidden = list.length === 0;
+  $("rows").replaceChildren(...list.map(buildRow));
+  enter($("rows").querySelector(".is-fresh"));
+  if (freshEntry && !keyStore.find(freshEntry.kid)) backToAsk();
+}
+
+function buildRow(entry) {
+  const node = $("rowTpl").content.firstElementChild.cloneNode(true);
+  const q = (sel) => node.querySelector(sel);
+  node.dataset.kid = entry.kid;
+  node.classList.toggle("is-fresh", entry.kid === highlightKid);
+  q(".r-code").textContent = unbreakable(entry.fingerprint);
+  const name = q(".r-name");
+  name.textContent = entry.label || "Sem anotação";
+  name.classList.toggle("unnamed", !entry.label);
+  const copyBtn = q(".act-copy");
+  copyBtn.setAttribute("aria-label", `Copiar link do pedido ${entry.label || entry.fingerprint}`);
+  copyBtn.addEventListener("click", () => copyWithFeedback(copyBtn, lockLink(entry.publicKey)));
+  q(".act-destroy").setAttribute("aria-label", `Apagar o pedido ${entry.label || entry.fingerprint}`);
+  q(".act-destroy").addEventListener("click", () => destroyLock(entry));
+  return node;
+}
+
+// Undo beats "are you sure?": the key is kept in memory for a few seconds.
+function destroyLock(entry, onDestroyed) {
+  const snapshot = keyStore.find(entry.kid);
+  if (!snapshot) return;
+  keyStore.remove(entry.kid);
+  const finish = () => {
+    renderRows();
+    onDestroyed?.();
+  };
+  // A visible row folds away instead of vanishing.
+  const row = $("rows").querySelector(`[data-kid="${entry.kid}"]`);
+  if (row?.offsetParent && !reduceMotion.matches) {
+    row.style.overflow = "hidden";
+    row.animate(
+      [{ opacity: 1, height: `${row.offsetHeight}px` }, { opacity: 0, height: "0px", paddingTop: "0px" }],
+      { duration: EXIT_MS, easing: EASE_OUT, fill: "forwards" }
+    ).finished.then(finish);
+  } else {
+    finish();
+  }
+  toast("Pedido apagado.", {
+    label: "Desfazer",
+    run: () => {
+      keyStore.add(snapshot);
+      highlightKid = snapshot.kid;
+      renderRows();
+      highlightKid = null;
+    },
+  });
+}
+
+function showFresh(entry, copied) {
+  freshEntry = entry;
+  $("freshTitle").textContent = copied ? "Link copiado" : "Link pronto";
+  $("freshLead").textContent = copied
+    ? "Mande para quem tem o segredo, em qualquer conversa."
+    : "Copie e mande para quem tem o segredo, em qualquer conversa.";
+  const copyBtn = $("freshCopy");
+  delete copyBtn.dataset.label;
+  copyBtn.textContent = copied ? "Copiar de novo" : "Copiar";
+  copyBtn.classList.toggle("primary", !copied);
+  fillLinkBox($("freshLink"), lockLink(entry.publicKey));
+  $("freshFp").textContent = entry.fingerprint.replace(/-/g, " ");
+  $("freshLabel").value = entry.label || "";
+  $("freshShareRow").hidden = !canShare;
+  showResult($("askStart"), $("fresh"), $("freshTitle"));
+}
+
+function backToAsk() {
+  freshEntry = null;
+  renderRows();
+  showStart($("askStart"), $("fresh"), $("newBtn"));
+}
+
+$("newForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  withLoading($("newBtn"), "Criando link…", async () => {
+    try {
+      const lock = await generateLock();
+      const entry = { ...lock, label: "", createdAt: Date.now() };
+      keyStore.add(entry);
+      const copied = await writeClipboard(lockLink(entry.publicKey));
+      return () => {
+        showFresh(entry, copied);
+        replay($("artPedir"), "sent");
+      };
+    } catch (err) {
+      console.error(err);
+      toast("Não deu para criar o link. Tente de novo.");
+      return null;
+    }
+  });
+});
+
+// The name is optional and comes after: it is saved as it is typed.
+$("freshLabel").addEventListener("input", () => {
+  if (!freshEntry) return;
+  freshEntry.label = $("freshLabel").value.trim();
+  keyStore.update(freshEntry.kid, { label: freshEntry.label });
+});
+$("freshLabel").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") e.currentTarget.blur();
+});
+$("freshBack").addEventListener("click", backToAsk);
+$("freshCopy").addEventListener("click", (e) => freshEntry && copyWithFeedback(e.currentTarget, lockLink(freshEntry.publicKey)));
+$("freshShare").addEventListener("click", async () => {
+  if (!freshEntry) return;
+  try {
+    await navigator.share({ title: "PSIU", url: lockLink(freshEntry.publicKey) });
+  } catch { /* share sheet dismissed */ }
+});
+
+// ---------- abrir (open) ----------
+
+let opened = null; // { entry, secret, visible }
+
+function paintSecret() {
+  const pre = $("openSecret");
+  pre.textContent = opened.visible ? opened.secret : "•".repeat(Math.min(opened.secret.length, 24));
+  pre.classList.toggle("masked", !opened.visible);
+  setEye($("toggleSecretBtn"), opened.visible);
+}
+
+function backToOpen() {
+  opened = null;
+  $("openSecret").textContent = "";
+  $("openInput").value = "";
+  $("artAbrir").classList.remove("is-open", "turned");
+  showStart($("openStart"), $("openResult"), $("openInput"));
+}
+
+async function openResponse() {
+  const input = $("openInput");
+  const msg = $("openMsg");
+  setError(msg, "", input);
+  if (!input.value.trim()) {
+    setError(msg, "Cole o link de resposta que te mandaram.", input);
+    input.focus();
+    return;
+  }
+  await withLoading($("openBtn"), "Abrindo…", async () => {
+    try {
+      const { entry, secret } = await openSealed(input.value);
+      $("artAbrir").classList.add("turned", "is-open");
+      return () => {
+        opened = { entry, secret, visible: false };
+        $("openFrom").textContent = entry.label ? `Pedido: ${entry.label}` : `Pedido ${entry.fingerprint}`;
+        paintSecret();
+        showResult($("openStart"), $("openResult"), $("openTitle"));
+      };
+    } catch (err) {
+      if (!(err instanceof CadeadoError)) console.error(err);
+      setError(msg, err instanceof CadeadoError ? err.message : TAMPERED, input);
+      return null;
+    }
+  });
+}
+
+$("openForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  openResponse();
+});
+onCtrlEnter($("openInput"), openResponse);
+$("openInput").addEventListener("paste", () => setTimeout(openResponse, 0));
+$("openInput").addEventListener("input", () => setError($("openMsg"), "", $("openInput")));
+$("copySecretBtn").addEventListener("click", (e) => opened && copyWithFeedback(e.currentTarget, opened.secret));
+$("toggleSecretBtn").addEventListener("click", () => {
+  if (!opened) return;
+  opened.visible = !opened.visible;
+  paintSecret();
+});
+$("destroyOpenBtn").addEventListener("click", () => {
+  if (!opened) return;
+  destroyLock(opened.entry, backToOpen);
+});
+$("openAnotherBtn").addEventListener("click", backToOpen);
+
+// ---------- send ----------
+
+let recipient = null;
+let lastReply = "";
+
+function replyLink(sealed) {
+  return `${location.href.split("#")[0]}#${ROUTE_REPLY}${sealed}`;
+}
+
+function showSendPart(part) {
+  const appearing = $(part).hidden;
+  for (const id of ["sendPaste", "sendForm", "sendDone"]) $(id).hidden = id !== part;
+  // The illustration belongs to the intro; it leaves with it on the result.
+  // (SVG elements have no .hidden property, so set the attribute.)
+  $("artEnviar").toggleAttribute("hidden", part === "sendDone");
+  $("artEnviar").classList.toggle("is-open", part !== "sendDone");
+  if (appearing) enter($(part));
+}
+
+function goToLink(input, msgEl) {
+  // A reply link pasted here belongs to "Abrir".
+  if (sealedCandidates(input.value).length) {
+    location.hash = `${ROUTE_REPLY}${sealedCandidates(input.value)[0]}`;
+    return;
+  }
+  const encoded = extractPublicKey(input.value);
+  if (!encoded) {
+    setError(msgEl, "Isso não parece um link do PSIU. Confira se copiou a mensagem certa.", input);
+    input.focus();
+    return;
+  }
+  setError(msgEl, "", input);
+  location.hash = `k${encoded}`;
+}
+
+async function showSend(encoded) {
+  if (!encoded) {
+    recipient = null;
+    $("pasteSub").textContent = "Cole o link que te mandaram.";
+    showSendPart("sendPaste");
+    return;
+  }
+  if (recipient?.encoded === encoded && !$("sendDone").hidden) return;
+  try {
+    recipient = await readRecipient(encoded);
+  } catch {
+    recipient = null;
+    $("pasteSub").textContent = "Esse link veio incompleto. Peça para mandarem de novo.";
+    $("pasteInput").value = "";
+    showSendPart("sendPaste");
+    $("pasteInput").focus();
+    return;
+  }
+  const own = Boolean(keyStore.find(recipient.kid));
+  $("sendFp").textContent = recipient.fingerprint.replace(/-/g, " ");
+  $("sendOwnNote").textContent = own
+    ? "Este pedido é seu: foi criado neste navegador. Mande o link para quem tem o segredo."
+    : "Quem pediu vê o mesmo código. Se quiser ter certeza, confirmem por ligação.";
+  setError($("lockMsg"), "", $("secretInput"));
+  showSendPart("sendForm");
+  $("secretInput").focus();
+}
+
+$("pasteForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  goToLink($("pasteInput"), $("pasteMsg"));
+});
+$("pasteInput").addEventListener("paste", () => setTimeout(() => goToLink($("pasteInput"), $("pasteMsg")), 0));
+
+$("maskToggle").addEventListener("click", () => {
+  const masked = $("secretInput").classList.toggle("masked");
+  setEye($("maskToggle"), !masked);
+});
+$("secretInput").addEventListener("input", () => setError($("lockMsg"), "", $("secretInput")));
+
+function lockSecret() {
+  const field = $("secretInput");
+  const msg = $("lockMsg");
+  if (!field.value.trim()) {
+    setError(msg, "Escreva o segredo primeiro.", field);
+    field.focus();
+    return;
+  }
+  withLoading($("lockBtn"), "Trancando…", async () => {
+    let sealed;
+    try {
+      sealed = await sealSecret(recipient.raw, field.value);
+    } catch (err) {
+      console.error(err);
+      setError(msg, "Não deu para trancar. Recarregue a página e tente de novo.", field);
+      return null;
+    }
+    field.value = "";
+    lastReply = replyLink(sealed);
+    const copied = await writeClipboard(lastReply);
+    return () => {
+      $("doneTitle").textContent = copied ? "Link de resposta copiado" : "Link de resposta pronto";
+      fillLinkBox($("replyLink"), lastReply);
+      const copyBtn = $("copySealedBtn");
+      delete copyBtn.dataset.label;
+      copyBtn.textContent = copied ? "Copiar de novo" : "Copiar";
+      copyBtn.classList.toggle("primary", !copied);
+      $("shareRow").hidden = !canShare;
+      showSendPart("sendDone");
+      window.scrollTo(0, 0);
+      $("doneTitle").focus({ preventScroll: true });
+    };
+  });
+}
+
+$("lockForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  lockSecret();
+});
+onCtrlEnter($("secretInput"), lockSecret);
+
+$("copySealedBtn").addEventListener("click", (e) => copyWithFeedback(e.currentTarget, lastReply));
+$("shareBtn").addEventListener("click", async () => {
+  try {
+    await navigator.share({ title: "PSIU", url: lastReply });
+  } catch { /* share sheet dismissed */ }
+});
+$("againBtn").addEventListener("click", () => {
+  showSendPart("sendForm");
+  $("secretInput").focus();
+});
+
+// ---------- routing ----------
+
+// ---------- "Como funciona" modal ----------
+
+const howDialog = $("howDialog");
+
+function openHow() {
+  howDialog.classList.remove("closing");
+  howDialog.showModal();
+}
+
+// Play the exit animation, then close for real (Esc, backdrop, ✕ and "Entendi" all land here).
+function closeHow() {
+  if (!howDialog.open || howDialog.classList.contains("closing")) return;
+  if (reduceMotion.matches) {
+    howDialog.close();
+    return;
+  }
+  howDialog.classList.add("closing");
+  setTimeout(() => {
+    howDialog.classList.remove("closing");
+    howDialog.close();
+  }, SHEET_CLOSE_MS);
+}
+
+$("howOpen").addEventListener("click", openHow);
+$("howClose").addEventListener("click", closeHow);
+$("howDone").addEventListener("click", closeHow);
+howDialog.addEventListener("cancel", (e) => {
+  e.preventDefault();
+  closeHow();
+});
+howDialog.addEventListener("click", (e) => {
+  if (e.target === howDialog) {
+    const box = howDialog.getBoundingClientRect();
+    const inside = e.clientX >= box.left && e.clientX <= box.right && e.clientY >= box.top && e.clientY <= box.bottom;
+    if (!inside) closeHow();
+  }
+});
+
+// Order of the views left to right; the content slides in the direction of travel.
+const VIEW_ORDER = ["receive", "send", "open"];
+let currentView = null;
+
+function isReplyHash(hash) {
+  return hash.startsWith(`${ROUTE_REPLY}${FORMAT_PREFIX}.`);
+}
+
+function viewFor(hash) {
+  if (isReplyHash(hash)) return "open";
+  if (hash.startsWith("k") || hash === ROUTE_SEND) return "send";
+  if (hash === ROUTE_OPEN) return "open";
+  return "receive";
+}
+
+async function applyRoute(hash, view) {
+  if (view === "send") {
+    selectTab($("tab-send"));
+    await showSend(hash.startsWith("k") ? hash.slice(1) : null);
+  } else if (view === "open") {
+    selectTab($("tab-open"));
+    if (isReplyHash(hash)) {
+      // Opened from a reply link: try every request kept in this browser, then drop the secret
+      // payload from the address bar so it doesn't linger in history.
+      $("openInput").value = `${location.href.split("#")[0]}#${hash}`;
+      history.replaceState(null, "", `#${ROUTE_OPEN}`);
+      if (!$("openResult").hidden) backToOpen();
+      openResponse();
+    }
+  } else {
+    selectTab($("tab-receive"));
+    renderRows();
+  }
+}
+
+function route() {
+  const hash = location.hash.slice(1);
+  // Old "#sobre" links open the modal over the first tab.
+  if (hash === ROUTE_ABOUT) {
+    history.replaceState(null, "", location.pathname + location.search);
+    route();
+    openHow();
+    return;
+  }
+  const view = viewFor(hash);
+  const previous = currentView;
+  currentView = view;
+  hideToast();
+
+  // First paint and changes inside the same tab (e.g. pasting a link in "Enviar") don't slide.
+  if (previous === null || previous === view || reduceMotion.matches) {
+    applyRoute(hash, view).then(() => placeInk(previous !== null));
+    return;
+  }
+
+  const dir = Math.sign(VIEW_ORDER.indexOf(view) - VIEW_ORDER.indexOf(previous));
+  document.documentElement.style.setProperty("--dir", dir);
+  const update = async () => {
+    switchingTab = true;
+    try {
+      await applyRoute(hash, view);
+      window.scrollTo(0, 0);
+      placeInk(true);
+    } finally {
+      switchingTab = false;
+    }
+  };
+
+  if (document.startViewTransition) {
+    document.startViewTransition(update);
+    return;
+  }
+  update().then(() =>
+    $("stage").animate(
+      [{ opacity: 0, transform: `translateX(${dir * STAGE_SLIDE_PX}px)` }, { opacity: 1, transform: "none" }],
+      { duration: ENTER_MS, easing: EASE_OUT }
+    )
+  );
+}
+
+// ---------- boot ----------
+
+if (!window.isSecureContext || !window.crypto?.subtle) {
+  $("cryptoBanner").hidden = false;
+  document.querySelectorAll(".btn.primary").forEach((b) => (b.disabled = true));
+}
+if (!keyStore.persistent) $("storageBanner").hidden = false;
+keyStore.onFallback = () => ($("storageBanner").hidden = false);
+
+$("year").textContent = new Date().getFullYear();
+window.addEventListener("hashchange", route);
+window.addEventListener("resize", () => placeInk(false));
+document.fonts?.ready.then(() => placeInk(false));
+window.addEventListener("storage", (e) => e.key === STORAGE_KEY && !$("panel-receive").hidden && renderRows());
+route();
+</script>
+</body>
+</html>

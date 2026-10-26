@@ -1,0 +1,1 @@
+Senha e chave de API mandadas no chat ficam no histórico pra sempre. Fiz o PSIU: você manda um link, a pessoa tranca o segredo no navegador dela, e só o seu navegador consegue abrir — nada passa por servidor nenhum. Grátis, sem cadastro e de código aberto: https://psiu.ezequielmagmorais.workers.dev

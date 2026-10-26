@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Sedgwick+Ave+Display&text=PSIU&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..700&family=JetBrains+Mono:wght@500;600&display=block" rel="stylesheet">
+<style>
+/* ---- the real PSIU stylesheet, verbatim ---- */
+{{APP_CSS}}
+</style>
+<style>
+/* ---- video layer: every frame is a pure function of t, so no CSS timing at all ---- */
+*, *::before, *::after { animation: none !important; transition: none !important; }
+/* vertical 1080x1920 (Reels / Stories). Content stays inside the safe zone: the top ~220px and the
+   bottom ~380px are covered by the platform's name, caption and buttons. */
+html, body { width: 1080px; height: 1920px; margin: 0; overflow: hidden; }
+body { display: block; padding: 0; min-height: 0; }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+.scene { position: absolute; inset: 0; opacity: 0; will-change: opacity, transform; }
+
+.cap {
+  position: absolute; left: 90px; right: 90px; top: 430px; text-align: center;
+  font: 650 68px/1.1 var(--font-body); font-stretch: var(--stretch-display); letter-spacing: -0.03em;
+  color: var(--color-ink); text-wrap: balance;
+}
+.cap .n { color: var(--color-brass); font-family: var(--font-mono); font-weight: 600; letter-spacing: 0; margin-right: 16px; }
+#cap1 { top: 330px; font-size: 84px; }
+
+/* the brand stays on screen through the walkthrough */
+.head-tag { position: absolute; left: 50%; top: 300px; font-size: 104px !important; transform: translate(-50%, -50%) rotate(-5deg); }
+
+/* chat, our own neutral bubbles (no messenger branding); text always wraps inside the bubble */
+.chat { position: absolute; left: 80px; right: 80px; top: 760px; display: flex; flex-direction: column; gap: 34px; }
+.who { font: 500 36px/1 var(--font-body); color: var(--color-muted); margin: 0 0 12px 8px; }
+.wrap-in { align-self: flex-start; max-width: 86%; }
+.wrap-out { align-self: flex-end; max-width: 86%; display: flex; flex-direction: column; align-items: flex-end; }
+.msg { box-sizing: border-box; max-width: 100%; padding: 34px 40px; border-radius: 34px; font: 500 56px/1.28 var(--font-body); overflow-wrap: anywhere; }
+.msg.in { background: var(--color-field); color: var(--color-ink); border-bottom-left-radius: 10px; }
+.msg.out { background: var(--color-icon-active); color: oklch(97% 0.004 250); border-bottom-right-radius: 10px; }
+.msg .km { font: 600 54px/1.35 var(--font-mono); letter-spacing: 0; font-feature-settings: "zero" 1; overflow-wrap: anywhere; word-break: break-all; }
+.stamp { font: 500 36px/1 var(--font-body); color: var(--color-danger); margin: 14px 10px 0 0; }
+
+/* the real app UI, scaled up for the vertical frame */
+.ui { position: absolute; left: 50%; top: 1140px; width: 460px; transform-origin: 50% 50%; }
+.ui .has-art { text-align: center; }
+.ui .art { margin-top: 0; }
+.ui h1 { margin-bottom: 10px; }
+.ui .link-box { text-align: left; }
+
+.cursor { position: absolute; width: 64px; height: 64px; left: 0; top: 0; pointer-events: none; }
+.cursor path { fill: var(--color-illo-paper); stroke: var(--color-tag-line); stroke-width: 2.2; stroke-linejoin: round; }
+.ripple { position: absolute; width: 110px; height: 110px; margin: -55px 0 0 -55px; border-radius: 50%; border: 5px solid var(--color-brass); opacity: 0; }
+
+.big-tag { position: absolute; left: 50%; top: 820px; font-size: 330px !important; transform-origin: 50% 50%; }
+.acro { position: absolute; left: 60px; right: 60px; top: 1120px; text-align: center; font: 600 46px/1.2 var(--font-body); color: var(--color-brass); letter-spacing: 0.01em; }
+.line { position: absolute; left: 100px; right: 100px; top: 1230px; text-align: center; font: 500 56px/1.22 var(--font-body); color: var(--color-ink); text-wrap: balance; }
+
+.end-title { position: absolute; left: 80px; right: 80px; top: 330px; text-align: center; font: 650 118px/1.02 var(--font-body); font-stretch: var(--stretch-display); letter-spacing: -0.035em; color: var(--color-ink); text-wrap: balance; }
+.end-tag { position: absolute; left: 50%; top: 960px; font-size: 250px !important; transform-origin: 50% 50%; }
+.end-url { position: absolute; left: 40px; right: 40px; top: 1200px; text-align: center; font: 600 40px/1.2 var(--font-mono); color: var(--color-brass); font-feature-settings: "zero" 1; overflow-wrap: anywhere; }
+.end-note { position: absolute; left: 60px; right: 60px; top: 1290px; text-align: center; font: 500 40px/1.3 var(--font-body); color: var(--color-muted); }
+.end-note strong { color: var(--color-ink); font-weight: 600; }
+</style>
+</head>
+<body>
+{{DEFS}}
+<div id="stage">
+
+  <!-- 1 · hook -->
+  <section class="scene" id="s1">
+    <p class="cap" id="cap1">Senha no chat fica lá pra sempre.</p>
+    <div class="chat">
+      <div class="wrap-in" id="m1"><p class="who">Ana</p><div class="msg in">Me passa a chave do Stripe?</div></div>
+      <div class="wrap-out" id="m2"><div class="msg out leak"><span class="km" id="leak">sk_live_51HxQe8vT2…</span></div><p class="stamp" id="stamp">lida · fica no histórico</p></div>
+    </div>
+  </section>
+
+  <!-- 2 · reveal -->
+  <section class="scene" id="s2">
+    <div class="chat"><div class="wrap-out" id="m3" style="opacity:0"><div class="msg out"><span class="km" id="scramble">sk_live_51HxQe8vT2…</span></div></div></div>
+    <span class="tag big-tag" id="bigTag">PSIU</span>
+    <p class="acro" id="acro">Privado · Seguro · Inviolável · Único</p>
+    <p class="line" id="line">Troque senhas e chaves de API sem expor nada no chat.</p>
+  </section>
+
+  <!-- 3 · pedir -->
+  <section class="scene" id="s3">
+    <span class="tag head-tag">PSIU</span>
+    <p class="cap"><span class="n">1</span>Você cria um link de pedido</p>
+    <div class="ui" id="ui3">
+      <div class="has-art" id="ask">
+        {{ART_PEDIR}}
+        <h1>Pedir um segredo</h1>
+        <p class="sub">Crie um link e mande para quem tem a senha. Ela volta trancada, e só você abre.</p>
+        <button class="btn primary large" id="askBtn" type="button">Criar link de pedido</button>
+      </div>
+      <div class="result" id="askDone" style="display:none">
+        <div class="result-head">{{MARK}}<h1>Link copiado</h1><p class="sub">Mande para quem tem o segredo, em qualquer conversa.</p></div>
+        <div class="link-box"><span class="link-text">https://psiu.ezequielmagmorais.workers.dev/#kBKpcZ7r…</span><button class="btn" type="button">Copiar de novo</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · enviar -->
+  <section class="scene" id="s4">
+    <span class="tag head-tag">PSIU</span>
+    <p class="cap"><span class="n">2</span>A pessoa tranca a senha</p>
+    <div class="ui" id="ui4">
+      <div class="has-art" id="send">
+        {{ART_ENVIAR}}
+        <h1>Enviar um segredo</h1>
+        <div class="reveal-wrap" style="margin-top:18px"><textarea class="mono" id="typed" style="min-height:76px;resize:none" readonly></textarea></div>
+        <div class="row" style="justify-content:center;margin-top:16px"><button class="btn primary large" id="sendBtn" type="button">Trancar e copiar link</button></div>
+      </div>
+      <div class="result" id="sendDone" style="display:none">
+        <div class="result-head">{{MARK}}<h1>Link de resposta copiado</h1><p class="sub">Mande de volta para quem pediu. Só o navegador dessa pessoa abre.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · abrir -->
+  <section class="scene" id="s5">
+    <span class="tag head-tag">PSIU</span>
+    <p class="cap"><span class="n">3</span>Volta pelo chat. Só você abre.</p>
+    <div class="chat" id="chat5"><div class="wrap-in" id="m5"><p class="who">Ana</p><div class="msg in"><span class="km" style="font-size:44px">psiu…workers.dev/#rcad1.Xsw-KALg.BLRw3OABmeto2Gr…</span></div></div></div>
+    <div class="ui" id="ui5">
+      <div class="result">
+        <div class="result-head">{{MARK}}<h1>Segredo aberto</h1><p class="sub">Pedido: Ana, Stripe</p></div>
+        <div class="reveal-wrap"><pre class="secret masked" id="secret">••••••••••••••••••</pre>
+          <button class="eye" id="eye" aria-pressed="false" type="button"><svg class="i-show" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="i-hide" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.7 10.7 0 0 1 12 5c6.4 0 10 7 10 7a17.7 17.7 0 0 1-3.2 4.2M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7c1.7 0 3.2-.5 4.5-1.2"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · punchline -->
+  <section class="scene" id="s6">
+    <p class="end-title" id="endTitle">Nada sai do seu navegador.</p>
+    <span class="tag end-tag" id="endTag">PSIU</span>
+    <p class="end-url" id="endUrl">psiu.ezequielmagmorais.workers.dev</p>
+    <p class="end-note" id="endNote"><strong>Código aberto</strong> · grátis · sem cadastro</p>
+  </section>
+
+  <svg class="cursor" id="cursor" viewBox="0 0 32 32"><path d="M6 3l20 12-9 2-4 9z"/></svg>
+  <div class="ripple" id="ripple"></div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const outCubic = (p) => 1 - Math.pow(1 - p, 3);
+const outBack = (p) => { const c = 1.7; return 1 + (c + 1) * Math.pow(p - 1, 3) + c * Math.pow(p - 1, 2); };
+const lerp = (a, b, p) => a + (b - a) * p;
+
+// scene windows: [start, end]; old out over the last 0.2 s, new in over 0.35 s
+const SCENES = [["s1", 0, 3], ["s2", 3, 6.5], ["s3", 6.5, 10.5], ["s4", 10.5, 14.5], ["s5", 14.5, 18], ["s6", 18, 22.5]];
+const UI_SCALE = 2.0;
+
+function sceneStyle(el, t, a, b) {
+  if (t < a || t >= b) { el.style.opacity = 0; el.style.visibility = "hidden"; return; }
+  el.style.visibility = "visible";
+  const pin = a === 0 ? 1 : outCubic(prog(t, a, a + 0.35));
+  const pout = prog(t, b - 0.2, b);
+  el.style.opacity = Math.min(pin, 1 - pout);
+  el.style.transform = `translateY(${(1 - pin) * 24 - pout * 16}px)`;
+}
+
+// a block that pops in at time a
+function pop(el, t, a, dur = 0.35, rise = 18) {
+  const p = prog(t, a, a + dur);
+  el.style.opacity = p > 0 ? outCubic(p) : 0;
+  el.style.transform = `translateY(${(1 - outCubic(p)) * rise}px)`;
+}
+
+function uiPlace(el) { el.style.transform = `translate(-50%, -50%) scale(${UI_SCALE})`; }
+
+const KEY = "sk_live_51HxQe8vT2…";
+const GLYPHS = "•#%&*@$+=?";
+function scramble(text, p) {
+  // characters turn into noise, then settle into dots, left to right
+  return text.split("").map((ch, i) => {
+    const local = clamp(p * 1.6 - i / text.length * 0.6);
+    if (local <= 0) return ch;
+    if (local >= 1) return "•";
+    return GLYPHS[(i * 7 + Math.floor(local * 20)) % GLYPHS.length];
+  }).join("");
+}
+
+// centre of an element in stage pixels (measured after layout, so it follows any scale)
+function centerOf(el) {
+  const r = el.getBoundingClientRect();
+  return [r.left + r.width / 2, r.top + r.height / 2];
+}
+
+function cursorAt(x, y, visible) {
+  const c = $("cursor");
+  c.style.opacity = visible;
+  c.style.transform = `translate(${x}px, ${y}px)`;
+}
+
+function rippleAt(t, at, x, y) {
+  const r = $("ripple"), p = prog(t, at, at + 0.45);
+  if (p <= 0 || p >= 1) { r.style.opacity = 0; return; }
+  r.style.left = x + "px"; r.style.top = y + "px";
+  r.style.opacity = 1 - p;
+  r.style.transform = `scale(${0.4 + p * 0.9})`;
+}
+
+function press(btn, t, at) {
+  const p = prog(t, at - 0.05, at + 0.12);
+  btn.style.transform = p > 0 && p < 1 ? "translateY(2px) scale(0.98)" : "";
+}
+
+function markIn(root, t, at) {
+  const m = root.querySelector(".mark"), k = root.querySelector(".mark-k");
+  const p = prog(t, at, at + 0.4);
+  m.style.transform = `scale(${lerp(0.6, 1, outBack(p))}) rotate(${(1 - p) * -12}deg)`;
+  m.style.opacity = p > 0 ? 1 : 0;
+  k.style.strokeDashoffset = 1 - outCubic(prog(t, at + 0.15, at + 0.5));
+}
+
+function renderAt(t) {
+  for (const [id, a, b] of SCENES) sceneStyle($(id), t, a, b);
+  cursorAt(0, 0, 0);
+  $("ripple").style.opacity = 0;
+
+  // 1 · hook
+  if (t < 3) {
+    pop($("cap1"), t, 0.05, 0.4);
+    pop($("m1"), t, 0.5);
+    pop($("m2"), t, 1.5);
+    const s = prog(t, 2.0, 2.3);
+    $("stamp").style.opacity = s;
+    $("leak").textContent = KEY;
+  }
+
+  // 2 · reveal: the key scrambles away, the tag slams in
+  if (t >= 3 && t < 6.5) {
+    const m3 = $("m3");
+    const sp = prog(t, 3.0, 3.45);
+    $("scramble").textContent = scramble(KEY, sp);
+    m3.style.opacity = 1 - prog(t, 3.35, 3.5);
+    m3.style.transform = `translateY(${-prog(t, 3.3, 3.5) * 30}px)`;
+    const tp = prog(t, 3.5, 3.85);
+    const tag = $("bigTag");
+    tag.style.opacity = tp > 0 ? 1 : 0;
+    tag.style.transform = `translate(-50%, -50%) rotate(-5deg) scale(${lerp(1.8, 1, outBack(tp))})`;
+    pop($("acro"), t, 4.0);
+    pop($("line"), t, 4.5);
+  }
+
+  // 3 · pedir
+  if (t >= 6.5 && t < 10.5) {
+    uiPlace($("ui3"));
+    const done = t >= 8.5;
+    $("ask").style.display = done ? "none" : "block";
+    $("askDone").style.display = done ? "block" : "none";
+    if (!done) {
+      const [bx, by] = centerOf($("askBtn"));
+      const p = outCubic(prog(t, 7.0, 7.9));
+      cursorAt(lerp(bx + 300, bx + 20, p), lerp(by + 150, by + 6, p), prog(t, 6.9, 7.1) * (1 - prog(t, 8.3, 8.45)));
+      press($("askBtn"), t, 8.0);
+      rippleAt(t, 8.0, bx, by);
+    } else {
+      pop($("askDone"), t, 8.5, 0.35, 14);
+      markIn($("askDone"), t, 8.5);
+    }
+    const art = $("artPedir"); const plane = art.querySelector(".plane");
+    const fp = prog(t, 6.8, 7.6);
+    plane.style.transform = `translate(${(1 - outCubic(fp)) * -18}px, ${(1 - outCubic(fp)) * 10}px)`;
+    plane.style.opacity = fp;
+  }
+
+  // 4 · enviar
+  if (t >= 10.5 && t < 14.5) {
+    uiPlace($("ui4"));
+    const done = t >= 13.0;
+    $("send").style.display = done ? "none" : "block";
+    $("sendDone").style.display = done ? "block" : "none";
+    const n = Math.floor(clamp((t - 11.0) / 0.125, 0, 16));
+    $("typed").value = "•".repeat(n);
+    const shackle = $("artEnviar").querySelector(".shackle");
+    const snap = prog(t, 12.5, 12.75);
+    shackle.style.transform = `translateY(${-9 * (1 - outBack(snap))}px)`;
+    if (!done) {
+      const [bx, by] = centerOf($("sendBtn"));
+      const p = outCubic(prog(t, 11.6, 12.4));
+      cursorAt(lerp(bx + 300, bx + 20, p), lerp(by + 140, by + 6, p), prog(t, 11.5, 11.7) * (1 - prog(t, 12.8, 12.95)));
+      press($("sendBtn"), t, 12.5);
+      rippleAt(t, 12.5, bx, by);
+    } else {
+      pop($("sendDone"), t, 13.0, 0.35, 14);
+      markIn($("sendDone"), t, 13.0);
+    }
+  }
+
+  // 5 · abrir
+  if (t >= 14.5 && t < 18) {
+    uiPlace($("ui5"));
+    const chatOut = prog(t, 15.85, 16.0);
+    pop($("m5"), t, 15.0);
+    $("chat5").style.opacity = 1 - chatOut;
+    const ui = $("ui5");
+    const pin = prog(t, 16.0, 16.35);
+    ui.style.opacity = pin;
+    ui.style.transform = `translate(-50%, -50%) translateY(${(1 - outCubic(pin)) * 20}px) scale(${UI_SCALE})`;
+    markIn(ui, t, 16.0);
+    const shown = t >= 17.0;
+    $("secret").textContent = shown ? "sk_live_51HxQe8vT2" : "••••••••••••••••••";
+    $("secret").classList.toggle("masked", !shown);
+    $("eye").setAttribute("aria-pressed", String(shown));
+    const [ex, ey] = centerOf($("eye"));
+    const p = outCubic(prog(t, 16.4, 16.9));
+    cursorAt(lerp(ex - 260, ex - 4, p), lerp(ey + 220, ey + 4, p), prog(t, 16.3, 16.45) * (1 - prog(t, 17.4, 17.6)));
+    rippleAt(t, 17.0, ex, ey);
+  }
+
+  // 6 · punchline
+  if (t >= 18) {
+    pop($("endTitle"), t, 18.0, 0.45, 22);
+    const tp = prog(t, 19.0, 19.35);
+    const tag = $("endTag");
+    tag.style.opacity = tp > 0 ? 1 : 0;
+    tag.style.transform = `translate(-50%, -50%) rotate(-5deg) scale(${lerp(1.6, 1, outBack(tp))})`;
+    pop($("endUrl"), t, 19.5);
+    pop($("endNote"), t, 20.0);
+  }
+}
+
+// Layout check for stills: anything outside the frame margins, or text spilling out of its box.
+window.__overflow = () => {
+  const W = 1080, H = 1920, M = 36, bad = [];
+  for (const scene of document.querySelectorAll(".scene")) {
+    if (scene.style.visibility !== "visible" || Number(scene.style.opacity) < 0.5) continue;
+    for (const el of scene.querySelectorAll("*")) {
+      const cs = getComputedStyle(el);
+      if (cs.display === "none" || cs.visibility === "hidden" || Number(cs.opacity) === 0 || el.closest("svg")) continue;
+      const r = el.getBoundingClientRect();
+      if (!r.width || !r.height) continue;
+      const name = el.id || el.className || el.tagName;
+      if (r.left < M || r.right > W - M || r.top < 0 || r.bottom > H) bad.push(`${scene.id}:${name} outside frame`);
+      const leafText = el.children.length === 0 && el.textContent.trim();
+      if (leafText && (el.scrollWidth > el.clientWidth + 1) && cs.overflow === "visible" && cs.display !== "inline") bad.push(`${scene.id}:${name} text spills`);
+    }
+  }
+  return bad;
+};
+
+// wait for fonts before the first capture
+document.fonts.ready.then(() => { renderAt(0); window.__ready = true; });
+window.renderAt = renderAt;
+</script>
+</body>
+</html>

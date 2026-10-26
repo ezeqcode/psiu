@@ -1,0 +1,7 @@
+name = "psiu"
+compatibility_date = "2026-09-01"
+
+# PSIU is a single static page: all crypto runs in the browser, nothing is processed server-side.
+# The Worker only serves ./public (index.html + _headers with the security headers).
+[assets]
+directory = "./public"
