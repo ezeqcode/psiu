@@ -564,28 +564,29 @@ ol.how li strong { font-weight: 600; }
 </style>
 </head>
 <body>
-<!-- "magazine cutout": grow the shape, roughen the edge with noise, fill it with paper, drop a short shadow -->
+<!-- die-cut sticker: grow the shape, round it off (blur + alpha threshold) so the paper border is even
+     like the PSIU tag's, fill it with paper, drop a short shadow -->
 <svg class="defs" width="0" height="0" aria-hidden="true" focusable="false">
   <filter id="cutout" x="-25%" y="-25%" width="150%" height="150%" color-interpolation-filters="sRGB">
-    <feMorphology in="SourceAlpha" operator="dilate" radius="3.4" result="grown"/>
-    <feTurbulence type="fractalNoise" baseFrequency="0.07" numOctaves="2" seed="7" result="noise"/>
-    <feDisplacementMap in="grown" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G" result="rough"/>
+    <feMorphology in="SourceAlpha" operator="dilate" radius="3" result="grown"/>
+    <feGaussianBlur in="grown" stdDeviation="1.4" result="soft"/>
+    <feComponentTransfer in="soft" result="edge"><feFuncA type="linear" slope="8" intercept="-3"/></feComponentTransfer>
     <feFlood class="cut-halo" result="halo"/>
-    <feComposite in="halo" in2="rough" operator="in" result="paper"/>
-    <feGaussianBlur in="rough" stdDeviation="1.4" result="blur"/>
-    <feOffset in="blur" dx="0.6" dy="2.2" result="drop"/>
+    <feComposite in="halo" in2="edge" operator="in" result="paper"/>
+    <feGaussianBlur in="edge" stdDeviation="1.4" result="blur"/>
+    <feOffset in="blur" dx="0.5" dy="2" result="drop"/>
     <feFlood class="cut-shadow" result="shade"/>
     <feComposite in="shade" in2="drop" operator="in" result="shadow"/>
     <feMerge><feMergeNode in="shadow"/><feMergeNode in="paper"/><feMergeNode in="SourceGraphic"/></feMerge>
   </filter>
   <filter id="cutout-sm" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
-    <feMorphology in="SourceAlpha" operator="dilate" radius="1.05" result="grown"/>
-    <feTurbulence type="fractalNoise" baseFrequency="0.22" numOctaves="2" seed="3" result="noise"/>
-    <feDisplacementMap in="grown" in2="noise" scale="1.1" xChannelSelector="R" yChannelSelector="G" result="rough"/>
+    <feMorphology in="SourceAlpha" operator="dilate" radius="1.1" result="grown"/>
+    <feGaussianBlur in="grown" stdDeviation="0.5" result="soft"/>
+    <feComponentTransfer in="soft" result="edge"><feFuncA type="linear" slope="8" intercept="-3"/></feComponentTransfer>
     <feFlood class="cut-halo" result="halo"/>
-    <feComposite in="halo" in2="rough" operator="in" result="paper"/>
-    <feGaussianBlur in="rough" stdDeviation="0.6" result="blur"/>
-    <feOffset in="blur" dy="0.9" result="drop"/>
+    <feComposite in="halo" in2="edge" operator="in" result="paper"/>
+    <feGaussianBlur in="edge" stdDeviation="0.6" result="blur"/>
+    <feOffset in="blur" dy="0.8" result="drop"/>
     <feFlood class="cut-shadow" result="shade"/>
     <feComposite in="shade" in2="drop" operator="in" result="shadow"/>
     <feMerge><feMergeNode in="shadow"/><feMergeNode in="paper"/><feMergeNode in="SourceGraphic"/></feMerge>
