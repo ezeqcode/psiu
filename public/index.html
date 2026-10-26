@@ -208,6 +208,7 @@ body { min-height: 100dvh; display: flex; flex-direction: column; }
 .art .ln { fill: none; stroke: var(--color-illo-line); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .art .thin { stroke-width: 1.5; }
 .art .dash { stroke-dasharray: 2 5; }
+.art .trail-line { fill: none; stroke: var(--color-muted); stroke-width: 1.6; stroke-linecap: round; stroke-dasharray: 0.5 5; }
 .art .f-fill { fill: var(--color-illo-fill); }
 .art .f-brass { fill: var(--color-illo-brass); }
 .art .f-paper { fill: var(--color-illo-paper); }
@@ -620,6 +621,8 @@ ol.how li strong { font-weight: 600; }
     <div id="askStart">
     <svg class="art" id="artPedir" viewBox="0 0 160 120" aria-hidden="true" focusable="false">
       <ellipse class="f-fill" cx="58" cy="106" rx="34" ry="4"/>
+      <!-- the flight path is drawn on the page, not on the sticker, so its dashes don't each get a paper border -->
+      <path class="trail-line trail" d="M84 38C98 19 112 15 121 21"/>
       <g filter="url(#cutout)">
       <path class="sh-out" d="M42 44V34a16 16 0 0 1 32 0v26"/>
       <path class="sh-in" d="M42 44V34a16 16 0 0 1 32 0v26"/>
@@ -627,7 +630,6 @@ ol.how li strong { font-weight: 600; }
       <path class="glint" d="M39 60h30"/>
       <circle class="f-ink" cx="58" cy="73" r="5"/>
       <path class="f-ink" d="M55.6 76h4.8l1.4 11h-7.6z"/>
-      <path class="ln thin dash trail" d="M80 40C96 18 114 13 128 22"/>
       <g class="plane">
         <path class="f-paper ln" d="M124 22 150 12 140 38 134 28z"/>
         <path class="ln thin" d="M134 28 150 12"/>

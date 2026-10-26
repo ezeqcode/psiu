@@ -5,8 +5,6 @@ Everything is encrypted in your browser; nothing is sent to a server.
 
 **Live:** https://psiu.ezequielmagmorais.workers.dev
 
-![PSIU](brag-output/brag.jpg)
-
 A secret pasted into WhatsApp, Slack or e-mail stays in the history forever, on every device and
 backup of everyone in the conversation. PSIU replaces it with two links that are useless to anyone
 but the person who asked.
@@ -65,12 +63,6 @@ npx wrangler deploy
 ```
 
 The whole app is `public/index.html`; `public/_headers` adds the security headers.
-
-## Launch video
-
-`brag-output/` holds the launch video (vertical 1080×1920) and the scripts that build it from the
-real page: `work/build.py` assembles the scenes, `work/music.py` writes the soundtrack,
-`work/capture.mjs` renders frames with headless Chrome. Made with [/brag](https://github.com/latent-spaces/brag).
 
 ## License
 
